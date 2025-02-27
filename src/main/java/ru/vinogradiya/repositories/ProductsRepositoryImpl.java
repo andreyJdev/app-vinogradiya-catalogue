@@ -17,8 +17,8 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.models.entity.Selection_;
-import ru.vinogradiya.utils.Paged;
-import ru.vinogradiya.utils.PredicateManager;
+import ru.vinogradiya.utils.common.Paged;
+import ru.vinogradiya.utils.common.PredicateManager;
 
 import java.util.List;
 import java.util.Optional;

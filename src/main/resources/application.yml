@@ -4,6 +4,9 @@ server:
 spring:
   application:
     name: app-vinogradiya-catalogue
+  jackson:
+    mapper:
+      default-view-inclusion: true
   datasource:
     hikari:
       data-source-properties:

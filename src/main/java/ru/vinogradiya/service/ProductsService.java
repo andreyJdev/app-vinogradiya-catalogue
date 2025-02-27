@@ -3,7 +3,7 @@ package ru.vinogradiya.service;
 import org.springframework.data.domain.Pageable;
 import ru.vinogradiya.models.dto.ProductItemDto;
 import ru.vinogradiya.models.dto.ProductItemFilter;
-import ru.vinogradiya.utils.Paged;
+import ru.vinogradiya.utils.common.Paged;
 
 public interface ProductsService {
 

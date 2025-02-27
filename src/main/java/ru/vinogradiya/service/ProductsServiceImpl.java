@@ -8,7 +8,11 @@ import ru.vinogradiya.models.dto.ProductItemDto;
 import ru.vinogradiya.models.dto.ProductItemFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.repositories.ProductsRepository;
-import ru.vinogradiya.utils.Paged;
+import ru.vinogradiya.utils.common.Paged;
+import ru.vinogradiya.utils.common.exceptions.ApiException;
+import ru.vinogradiya.utils.enums.ProductErrorMessages;
+
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -31,15 +35,18 @@ public class ProductsServiceImpl implements ProductsService {
         return repository.findById(id).map(this::buildProductItemDto)
                 .orElseGet(() -> {
                     log.warn(">> Элемент с id: {} не найден", id);
-                    return null;
+                    throw new ApiException(ProductErrorMessages.PRODUCT_NOT_FOUND, id);
                 });
     }
 
     private ProductItemDto buildProductItemDto(Product p) {
+        ProductItemDto.Selection selection = Objects.nonNull(p.getSelection()) && Objects.nonNull(p.getSelection().getName()) ?
+                ProductItemDto.Selection.of(p.getSelection().getName()) :
+                null;
         return ProductItemDto.builder()
                 .id(p.getId())
                 .name(p.getName())
-                .selection(p.getSelection().getName())
+                .selection(selection)
                 .time(p.getTime())
                 .strength(p.getStrength())
                 .cluster(p.getCluster())

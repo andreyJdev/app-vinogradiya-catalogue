@@ -1,4 +1,4 @@
-package ru.vinogradiya.utils;
+package ru.vinogradiya.utils.common;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.Path;

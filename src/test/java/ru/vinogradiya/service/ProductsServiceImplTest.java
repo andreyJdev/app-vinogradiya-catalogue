@@ -14,7 +14,8 @@ import ru.vinogradiya.models.dto.ProductItemFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepositoryImpl;
-import ru.vinogradiya.utils.Paged;
+import ru.vinogradiya.utils.common.Paged;
+import ru.vinogradiya.utils.common.exceptions.ApiException;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -25,6 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class ProductsServiceImplTest {
@@ -128,12 +130,25 @@ class ProductsServiceImplTest {
         // given
         Mockito.when(repository.findById(3L)).thenReturn(Optional.empty());
 
+        // when and then
+        assertThrows(ApiException.class, () -> service.findById(3L));
+    }
+
+    @Test
+    @DisplayName("Проверка получения от репозитория одного элемента без селекции и его преобразования в ProductItemDto")
+    void testFindById_shouldReturnProductItemWithNullSelection() {
+
+        // given
+        Product product = new Product();
+        Mockito.when(repository.findById(5L)).thenReturn(Optional.of(product));
+
         // when
-        ProductItemDto result = service.findById(3L);
+        ProductItemDto result = service.findById(5L);
 
         // then
         assertAll(
-                () -> assertNull(result)
+                () -> assertNotNull(result),
+                () -> assertNull(result.getSelection())
         );
     }
 }

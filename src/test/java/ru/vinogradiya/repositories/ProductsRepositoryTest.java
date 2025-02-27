@@ -15,7 +15,7 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.utils.JpaRepositoryBasedTest;
-import ru.vinogradiya.utils.Paged;
+import ru.vinogradiya.utils.common.Paged;
 
 import java.util.Arrays;
 import java.util.Collections;

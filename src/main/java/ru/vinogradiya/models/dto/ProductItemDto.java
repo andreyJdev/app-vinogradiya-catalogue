@@ -15,7 +15,7 @@ public class ProductItemDto {
     private Long id;
 
     @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(description = "Имя сорта винограда")
+    @Schema(description = "Название сорта")
     private String name;
 
     @JsonView(ProductItemViews.UserAccess.class)
@@ -27,19 +27,19 @@ public class ProductItemDto {
     private String strength;
 
     @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(description = "Характеристики кисти")
+    @Schema(description = "Описание особенностей грозди")
     private String cluster;
 
     @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(description = "Характеристики ягоды")
+    @Schema(description = "Описание особенностей ягоды")
     private String berry;
 
     @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(description = "Вкус ягоды")
+    @Schema(description = "Описание вкусовых особенностей")
     private String taste;
 
     @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(description = "Стойкость к морозу")
+    @Schema(description = "Значение морозостойкости")
     private Integer resistanceCold;
 
     @JsonView(ProductItemViews.UserAccess.class)
@@ -59,7 +59,7 @@ public class ProductItemDto {
     private String description;
 
     @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(description = "Мини селекция (если нет основной)")
+    @Schema(description = "Название мини селекции (если есть)")
     private String selectionMini;
 
     @JsonView(ProductItemViews.AdminAccess.class)
@@ -78,7 +78,14 @@ public class ProductItemDto {
     @Schema(description = "Продано черенков")
     private Integer soldCut;
 
-    @JsonView(ProductItemViews.UserAccess.class)
-    @Schema(name = "Имя селекции винограда")
-    private String selection;
+    @Schema(description = "Название селекции")
+    private Selection selection;
+
+    public record Selection(@JsonView(ProductItemViews.UserAccess.class)
+                            String name) {
+
+        public static Selection of(String name) {
+            return new Selection(name);
+        }
+    }
 }
