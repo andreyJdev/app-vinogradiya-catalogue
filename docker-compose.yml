@@ -1,0 +1,42 @@
+services:
+  db:
+    build:
+      context: .
+      dockerfile: ./docker/database/Dockerfile
+    container_name: db_vinogradiya_catalogue
+    environment:
+      POSTGRES_DB: vincatalog
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    restart: unless-stopped
+    networks:
+      - vinogradiya-catalogue
+
+  liquibase:
+    build:
+      context: .
+      dockerfile: ./docker/liquibase/Dockerfile
+    container_name: liquibase_vinogradiya_catalogue
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/vincatalog
+      SPRING_DATASOURCE_USERNAME: uvcat
+      SPRING_DATASOURCE_PASSWORD: pvcat
+    profiles:
+      - liquibase
+    networks:
+      - vinogradiya-catalogue
+    depends_on:
+      - db
+
+networks:
+  vinogradiya-catalogue:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local

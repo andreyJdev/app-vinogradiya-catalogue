@@ -1,0 +1,4 @@
+databaseChangeLog:
+  - include:
+      file: vinogradiya/v0.0.1/changelog.yml
+      relativeToChangelogFile: true

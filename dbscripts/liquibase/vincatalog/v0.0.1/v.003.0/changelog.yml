@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - logicalFilePath: vincatalog/v.003.0/changelog.yml
+  - changeSet:
+      id: v.003.0
+      author: andreyJdev
+      comment: Добавление первых продуктов
+      changes:
+        - sqlFile:
+            path: v_003_0.sql
+            relativeToChangelogFile: true

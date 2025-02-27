@@ -1,0 +1,25 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: app-vinogradiya-catalogue
+  datasource:
+    hikari:
+      data-source-properties:
+        "[v$session.program]": ${spring.application.name}
+      maximum-pool-size: ${HIKARI_DB_MAXIMUM_POOL_SIZE:20}
+      minimum-idle: ${HIKARI_DB_MINIMUM_IDLE_SIZE:5}
+    url: "${SPRING_DATASOURCE_URL}?currentSchema=main&prepareThreshold=0"
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:9081
+    producer:
+      bootstrap-servers: localhost:9081
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
