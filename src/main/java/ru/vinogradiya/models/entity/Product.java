@@ -1,16 +1,18 @@
-package ru.vinogradiya.models;
+package ru.vinogradiya.models.entity;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
-import java.util.Objects;
 
 @Entity
 @Data
@@ -32,79 +34,78 @@ public class Product implements Comparable<Product> {
     private Long id;
 
     @Column(name = "name", unique = true)
-    //@UniqueName(message = "Выберите другое Название сорта, это занято")
-    @NotNull(message = "Поле не должно быть пустым")
-    @NotBlank(message = "Обязательное заполнение Названия сорта")
-    @Size(max = 32, message = "Не больше 100 символов")
+    //@NotNull(message = "Поле не должно быть пустым")
+    //@NotBlank(message = "Обязательное заполнение Названия сорта")
+    //@Size(max = 32, message = "Не больше 100 символов")
     private String name;
 
     @Column(name = "time")
-    @NotNull(message = "Поле не должно быть пустым")
-    @NotEmpty(message = "Заполните Время созревания")
-    @Size(max = 32, message = "Не больше 100 символов")
+    //@NotNull(message = "Поле не должно быть пустым")
+    //@NotEmpty(message = "Заполните Время созревания")
+    //@Size(max = 32, message = "Не больше 100 символов")
     private String time;
 
     @Column(name = "strength")
-    @NotNull(message = "Поле не должно быть пустым")
-    @NotEmpty(message = "Заполните Сила роста")
-    @Size(max = 32, message = "Не больше 100 символов")
+    //@NotNull(message = "Поле не должно быть пустым")
+    //@NotEmpty(message = "Заполните Сила роста")
+    //@Size(max = 32, message = "Не больше 100 символов")
     private String strength;
 
     @Column(name = "cluster")
-    @NotNull(message = "Поле не должно быть пустым")
-    @NotEmpty(message = "Заполните Гроздь")
-    @Size(max = 32, message = "Не больше 100 символов")
+    //@NotNull(message = "Поле не должно быть пустым")
+    //@NotEmpty(message = "Заполните Гроздь")
+    //@Size(max = 32, message = "Не больше 100 символов")
     private String cluster;
 
     @Column(name = "berry")
-    @NotNull(message = "Поле не должно быть пустым")
-    @NotEmpty(message = "Заполните Ягода")
-    @Size(max = 32, message = "Не больше 100 символов")
+    //@NotNull(message = "Поле не должно быть пустым")
+    //@NotEmpty(message = "Заполните Ягода")
+    //@Size(max = 32, message = "Не больше 100 символов")
     private String berry;
 
     @Column(name = "taste")
-    @NotNull(message = "Поле не должно быть пустым")
-    @NotEmpty(message = "Заполните Вкус и консистенция мякоти")
-    @Size(max = 64, message = "Не больше 100 символов")
+    //@NotNull(message = "Поле не должно быть пустым")
+    //@NotEmpty(message = "Заполните Вкус и консистенция мякоти")
+    //@Size(max = 64, message = "Не больше 100 символов")
     private String taste;
 
     @Column(name = "resistance_cold")
-    @NotNull(message = "Поле не должно быть пустым")
+    //@NotNull(message = "Поле не должно быть пустым")
     private Integer resistanceCold;
 
     @Column(name = "price_seed")
-    @NotNull(message = "Поле не должно быть пустым")
+    //@NotNull(message = "Поле не должно быть пустым")
     private Integer priceSeed;
 
     @Column(name = "price_cut")
-    @NotNull(message = "Поле не должно быть пустым")
+    //@NotNull(message = "Поле не должно быть пустым")
     private Integer priceCut;
 
     @Column(name = "image")
-    @Size(max = 128, message = "Не больше 100 символов")
+    //@Size(max = 128, message = "Не больше 100 символов")
     private String image;
 
     @Column(name = "description")
-    @Size(max = 2048, message = "Не больше 2048 символов")
+    //@Size(max = 2048, message = "Не больше 2048 символов")
     private String description;
 
     @Column(name = "selection_mini")
-    @Size(max = 32, message = "Не больше 100 символов")
+    //@Size(max = 32, message = "Не больше 100 символов")
     private String selectionMini;
 
-    @Column(name = "available_seed")
+    //@Column(name = "available_seed")
     private Integer availableSeed;
 
-    @Column(name = "available_cut")
+    //@Column(name = "available_cut")
     private Integer availableCut;
 
-    @Column(name = "sold_seed")
+    //@Column(name = "sold_seed")
     private Integer soldSeed;
 
-    @Column(name = "sold_cut")
+    //@Column(name = "sold_cut")
     private Integer soldCut;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "selection_id", referencedColumnName = "id")
     Selection selection;
 

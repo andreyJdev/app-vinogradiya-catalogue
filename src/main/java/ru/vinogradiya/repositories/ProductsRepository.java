@@ -1,8 +1,11 @@
 package ru.vinogradiya.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.stereotype.Repository;
-import ru.vinogradiya.models.Product;
+import org.springframework.data.domain.Pageable;
+import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.models.entity.Product;
+import ru.vinogradiya.utils.Paged;
 
-@Repository
-public interface ProductsRepository extends JpaRepository<Product, Long> { }
+public interface ProductsRepository {
+
+    Paged<Product> findAll(ProductItemFilter filter, Pageable pageable);
+}
