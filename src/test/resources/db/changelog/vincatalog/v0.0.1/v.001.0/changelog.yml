@@ -1,5 +1,5 @@
 databaseChangeLog:
-  - logicalFilePath: db/changelog/vinogradiya/v.001.0/changelog.yml
+  - logicalFilePath: db/changelog/vincatalog/v.001.0/changelog.yml
   - changeSet:
       id: v.001.0
       author: andreyJdev
