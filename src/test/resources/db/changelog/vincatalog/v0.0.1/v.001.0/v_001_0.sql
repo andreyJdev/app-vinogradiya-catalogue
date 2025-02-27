@@ -37,13 +37,3 @@ ALTER TABLE product
         FOREIGN KEY (selection_id)
             REFERENCES selection (id)
             ON DELETE SET NULL;
-
-CREATE SEQUENCE selection_sequence
-    START WITH 7
-    INCREMENT BY 1
-    CYCLE;
-
-CREATE SEQUENCE product_sequence
-    START WITH 10
-    INCREMENT BY 1
-    CYCLE;

@@ -1,34 +1,33 @@
-package ru.vinogradiya.models;
+package ru.vinogradiya.models.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.FetchProfile;
 
 import java.util.List;
 
 @Entity
+@FetchProfile(name = "withProduct", fetchOverrides = {
+        @FetchProfile.FetchOverride(entity = Selection.class, association = "products", mode = FetchMode.JOIN)
+})
 @Data
-@EqualsAndHashCode
 @NoArgsConstructor
 @Table(name = "selection")
 public class Selection {
     @Id
     @Column(name = "id")
-    @SequenceGenerator(
-            name = "selection_sequence",
-            sequenceName = "selection_sequence",
-            allocationSize = 1
-    )
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,
-            generator = "selection_sequence")
     private Long id;
 
     @Column(name = "name", unique = true)
-    //@UniqueName(message = "Выберите другое Название селекции, это занято")
+    //todo @UniqueName(message = "Выберите другое Название селекции, это занято")
     @NotBlank(message = "Обязательное заполнение Названия селекции")
     @Size(max = 100, message = "Не больше 100 символов")
     private String name;

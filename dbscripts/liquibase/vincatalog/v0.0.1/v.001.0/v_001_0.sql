@@ -1,13 +1,23 @@
+CREATE SEQUENCE selection_sequence
+    START WITH 1
+    INCREMENT BY 1
+    CYCLE;
+
 CREATE TABLE IF NOT EXISTS selection
 (
-    "id"   bigint       NOT NULL
-    CONSTRAINT selection_pk PRIMARY KEY,
-    "name" varchar(100) NOT NULL
-    );
+    "id"   bigint DEFAULT NEXTVAL('selection_sequence'),
+    "name" varchar(100) NOT NULL,
+    CONSTRAINT selection_pk PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE product_sequence
+    START WITH 1
+    INCREMENT BY 1
+    CYCLE;
 
 CREATE TABLE IF NOT EXISTS product
 (
-    "id"              bigint      NOT NULL,
+    "id"              bigint  DEFAULT NEXTVAL('product_sequence'),
     "name"            varchar(32) NOT NULL,
     "time"            varchar(32),
     "strength"        varchar(32),
@@ -27,20 +37,10 @@ CREATE TABLE IF NOT EXISTS product
     "selection_id"    BIGINT,
     CONSTRAINT product_pk PRIMARY KEY (id),
     CONSTRAINT product_name UNIQUE (name)
-    );
+);
 
 ALTER TABLE product
     ADD CONSTRAINT product_selection_fk
         FOREIGN KEY (selection_id)
             REFERENCES selection (id)
             ON DELETE SET NULL;
-
-CREATE SEQUENCE selection_sequence
-    START WITH 7
-    INCREMENT BY 1
-    CYCLE;
-
-CREATE SEQUENCE product_sequence
-    START WITH 10
-    INCREMENT BY 1
-    CYCLE;
