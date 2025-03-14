@@ -18,6 +18,7 @@ import ru.vinogradiya.utils.JpaRepositoryBasedTest;
 import ru.vinogradiya.utils.Paged;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,8 +32,74 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
     private static final Long ID = 9999L;
 
-    private static final Sort sort = Sort.by(Product_.PRICE_SEED).ascending()
+    private static final Sort SORT = Sort.by(Product_.PRICE_SEED).ascending()
             .and(Sort.by(Product_.NAME).ascending());
+
+    private List<Selection> selections = Arrays.asList(
+            new Selection(1L, "Новая", Collections.emptyList()),
+            new Selection(2L, "Старая", Collections.emptyList())
+    );
+
+    private List<Product> products = Arrays.asList(
+            new Product(
+                    ID,
+                    "Деф1",
+                    "Оч. ранний",
+                    "Сильно-рослый",
+                    "Крупная 500-1200г.",
+                    "36х28 мм 15-20г. розовая",
+                    "Мясисто-сочная с мускатным ароматом, оч. сладкая",
+                    -23,
+                    600,
+                    300,
+                    "basanti.webp",
+                    null,
+                    "США",
+                    0,
+                    0,
+                    0,
+                    2,
+                    selections.get(1)
+            ),
+            new Product(
+                    1L,
+                    "Деф2",
+                    "Оч. ранний",
+                    "Сильно-рослый",
+                    "Крупная 500-1200г.",
+                    "36х28 мм 15-20г. розовая",
+                    "Мясисто-сочная с мускатным ароматом, оч. сладкая",
+                    -23,
+                    500,
+                    300,
+                    "basanti.webp",
+                    null,
+                    "США",
+                    0,
+                    0,
+                    0,
+                    2,
+                    selections.get(0)),
+            new Product(
+                    2L,
+                    "Алиса",
+                    "Оч. ранний",
+                    "Сильно-рослый",
+                    "Крупная 500-1200г.",
+                    "36х28 мм 15-20г. розовая",
+                    "Мясисто-сочная с мускатным ароматом, оч. сладкая",
+                    -23,
+                    500,
+                    300,
+                    "basanti.webp",
+                    null,
+                    "США",
+                    0,
+                    0,
+                    0,
+                    2,
+                    selections.get(0))
+    );
 
     @PersistenceContext
     private EntityManager manager;
@@ -40,78 +107,8 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     @Autowired
     private ProductsRepository repository;
 
-    private List<Product> products;
-    private List<Selection> selections;
-
     @BeforeEach
     void setUp() {
-        selections = Arrays.asList(
-                new Selection("Новая"),
-                new Selection("Старая"));
-
-        products = Arrays.asList(
-                new Product(
-                        "Басанти",
-                        "Оч. ранний",
-                        "Сильно-рослый",
-                        "Крупная 500-1200г.",
-                        "36х28 мм 15-20г. розовая",
-                        "Мясисто-сочная с мускатным ароматом, оч. сладкая",
-                        -23,
-                        600,
-                        300,
-                        "basanti.webp",
-                        null,
-                        "США",
-                        0,
-                        0,
-                        0,
-                        2,
-                        selections.get(1)
-                ),
-                new Product(
-                        "Оч. ранний",
-                        "Басанти",
-                        "Сильно-рослый",
-                        "Крупная 500-1200г.",
-                        "36х28 мм 15-20г. розовая",
-                        "Мясисто-сочная с мускатным ароматом, оч. сладкая",
-                        -23,
-                        500,
-                        300,
-                        "basanti.webp",
-                        null,
-                        "США",
-                        0,
-                        0,
-                        0,
-                        2,
-                        selections.get(0)),
-                new Product(
-                        "Оч. ранний",
-                        "Алиса",
-                        "Сильно-рослый",
-                        "Крупная 500-1200г.",
-                        "36х28 мм 15-20г. розовая",
-                        "Мясисто-сочная с мускатным ароматом, оч. сладкая",
-                        -23,
-                        500,
-                        300,
-                        "basanti.webp",
-                        null,
-                        "США",
-                        0,
-                        0,
-                        0,
-                        2,
-                        selections.get(0))
-        );
-        selections.get(0).setId(0L);
-        selections.get(1).setId(1L);
-        products.get(0).setId(ID);
-        products.get(1).setId(1L);
-        products.get(2).setId(2L);
-
         selections.forEach(selection -> manager.persist(selection));
         products.forEach(product -> manager.persist(product));
         manager.flush();
@@ -143,7 +140,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindAll_shouldReturnProductsFirstPageWithOrder() {
 
         // given
-        Pageable page = PageRequest.of(0, 2, sort);
+        Pageable page = PageRequest.of(0, 2, SORT);
 
         // when
         Paged<Product> result = repository.findAll(null, page);
@@ -161,7 +158,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindAll_shouldReturnProductsSecondPageWithOrder() {
 
         // given
-        Pageable page = PageRequest.of(1, 2, sort);
+        Pageable page = PageRequest.of(1, 2, SORT);
 
         // when
         Paged<Product> result = repository.findAll(null, page);

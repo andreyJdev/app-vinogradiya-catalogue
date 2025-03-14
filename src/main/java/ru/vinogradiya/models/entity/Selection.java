@@ -7,6 +7,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.FetchMode;
@@ -20,6 +21,7 @@ import java.util.List;
 })
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "selection")
 public class Selection {
     @Id
@@ -34,8 +36,4 @@ public class Selection {
 
     @OneToMany(mappedBy = "selection")
     private List<Product> products;
-
-    public Selection(String name) {
-        this.name = name;
-    }
 }
