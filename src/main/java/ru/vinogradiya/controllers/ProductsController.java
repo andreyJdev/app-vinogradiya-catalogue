@@ -35,10 +35,6 @@ public class ProductsController {
     @Operation(description = "Получить сорт винограда по идентификатору")
     public ResponseEntity<ProductItemDto> findById(@PathVariable Long productId) {
         ProductItemDto found = service.findById(productId);
-
-        if (found == null)
-            return ResponseEntity.notFound().build();
-
         return ResponseEntity.ok(found);
     }
 

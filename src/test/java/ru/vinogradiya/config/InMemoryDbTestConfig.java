@@ -1,11 +1,10 @@
-package ru.vinogradiya.utils;
+package ru.vinogradiya.config;
 
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres;
 import liquibase.integration.spring.SpringLiquibase;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.test.context.TestPropertySource;
 
 import javax.sql.DataSource;
@@ -16,8 +15,7 @@ import javax.sql.DataSource;
 public class InMemoryDbTestConfig {
 
     @Bean
-    @Primary
-    public DataSource inMemoryDS() throws Exception {
+    public DataSource dataSource() throws Exception {
         log.info("Using in-memory postgresql database");
         EmbeddedPostgres.Builder builder = EmbeddedPostgres.builder();
         EmbeddedPostgres postgres = builder.setConnectConfig("currentSchema", "main").start();
