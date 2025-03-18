@@ -29,6 +29,7 @@ public class GlobalExceptionHandler {
     @Generated
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     private static final String OBJECT = "object";
+    private static final String FIELD = "field";
     private static final String MESSAGE = "message";
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
@@ -73,6 +74,10 @@ public class GlobalExceptionHandler {
 
     private Map<String, String> toMap(ObjectError error) {
         return Map.of(OBJECT, (String) Objects.requireNonNullElse(error.getCode(), "UNKNOWN_OBJECT_TYPE"), MESSAGE, (String) Objects.requireNonNullElse(this.extractMessage(error), "UNKNOWN_ERROR"));
+    }
+
+    private Map<String, String> toMap(FieldError error) {
+        return Map.of(FIELD, (String) Objects.requireNonNullElse(error.getField(), "UNKNOWN_FIELD"), MESSAGE, (String) Objects.requireNonNullElse(this.extractMessage(error), "UNKNOWN_ERROR"));
     }
 
     private String extractMessage(ObjectError error) {

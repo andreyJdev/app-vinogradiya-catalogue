@@ -9,7 +9,7 @@ import ru.vinogradiya.models.dto.ProductItemFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.Paged;
-import ru.vinogradiya.utils.common.exceptions.ApiException;
+import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.enums.ProductErrorMessages;
 
 import java.util.Objects;

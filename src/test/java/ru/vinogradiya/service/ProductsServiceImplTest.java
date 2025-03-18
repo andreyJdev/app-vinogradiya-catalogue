@@ -15,7 +15,7 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepositoryImpl;
 import ru.vinogradiya.utils.common.Paged;
-import ru.vinogradiya.utils.common.exceptions.ApiException;
+import ru.vinogradiya.utils.common.exception.ApiException;
 
 import java.util.Arrays;
 import java.util.Collections;
