@@ -201,6 +201,6 @@ class ProductsControllerTest extends BaseMvcTest {
 
         // then
         result.andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.details").value("Невалидный JSON"));
+                .andExpect(jsonPath("$.details.message").value("Невалидный JSON"));
     }
 }
