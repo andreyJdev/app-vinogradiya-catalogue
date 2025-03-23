@@ -184,4 +184,23 @@ class ProductsControllerTest extends BaseMvcTest {
                 .andExpect(jsonPath("$.numberOfElements").value(0))
                 .andExpect(jsonPath("$.content").isEmpty());
     }
+
+    @Test
+    @DisplayName("Проверка отправки невалидного фильтра")
+    void testFindAll_shouldNotReturnBadRequestStatus() throws Exception {
+
+        // given
+        String filter = "IncorrectJson";
+
+        // when
+        var result = mvc.perform(
+                post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsBytes(filter))
+        );
+
+        // then
+        result.andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.details").value("Невалидный JSON"));
+    }
 }
