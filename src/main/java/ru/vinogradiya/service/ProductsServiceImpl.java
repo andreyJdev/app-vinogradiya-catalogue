@@ -10,7 +10,7 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.Paged;
 import ru.vinogradiya.utils.common.exception.ApiException;
-import ru.vinogradiya.utils.enums.ProductErrorMessages;
+import ru.vinogradiya.utils.enums.ProductErrorMessage;
 
 import java.util.Objects;
 
@@ -35,7 +35,7 @@ public class ProductsServiceImpl implements ProductsService {
         return repository.findById(id).map(this::buildProductItemDto)
                 .orElseGet(() -> {
                     log.warn(">> Элемент с id: {} не найден", id);
-                    throw new ApiException(ProductErrorMessages.PRODUCT_NOT_FOUND, id);
+                    throw new ApiException(ProductErrorMessage.PRODUCT_NOT_FOUND, id);
                 });
     }
 
