@@ -17,6 +17,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.vinogradiya.utils.common.dto.ApiError;
 import ru.vinogradiya.utils.enums.ErrorMessage;
 import ru.vinogradiya.utils.enums.ErrorMessage.Type;
+import ru.vinogradiya.utils.enums.GlobalErrorMessage;
 
 import java.util.List;
 import java.util.Map;
@@ -35,39 +36,34 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<ApiError> handle(MethodArgumentNotValidException ex) {
-        log.error(">> Ошибка при обработке REST запроса", ex);
         List<Map<String, String>> errors = this.extractErrors(ex.getBindingResult().getAllErrors());
-        ApiError apiError = this.buildFor(HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE);
+        ApiError apiError = this.buildFor(ex, HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE);
         apiError.setDetails(errors);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler({BindException.class})
     public ResponseEntity<ApiError> handle(BindException ex) {
-        log.error(">> Ошибка при обработке REST запроса", ex);
         List<Map<String, String>> errors = this.extractErrors(ex.getBindingResult().getAllErrors());
-        ApiError apiError = this.buildFor(HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE);
+        ApiError apiError = this.buildFor(ex, HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE);
         apiError.setDetails(errors);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
-    }
-
-    @ExceptionHandler({HttpMessageNotReadableException.class})
-    public ResponseEntity<ApiError> handle(HttpMessageNotReadableException ex) {
-        log.error(">> Ошибка при обработке REST запроса", ex);
-        ApiError apiError = this.buildFor(HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE);
-        apiError.setDetails("Невалидный JSON");
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 
     @ExceptionHandler({ApiException.class})
     public ResponseEntity<ApiError> handle(ApiException ex) {
-        log.error(">> Ошибка при обработке REST запроса", ex);
-        ApiError apiError = this.buildFor(ex.getError().getStatus(), ex.getError().getType());
+        ApiError apiError = this.buildFor(ex, ex.getError().getStatus(), ex.getError().getType());
         apiError.setDetails(ex.getDetails());
         return ResponseEntity.status(ex.getError().getStatus()).body(apiError);
     }
 
-    private ApiError buildFor(HttpStatus status, ErrorMessage.Type type) {
+    @ExceptionHandler({HttpMessageNotReadableException.class})
+    public ResponseEntity<ApiError> handle() {
+        return this.handle(new ApiException(GlobalErrorMessage.INVALID_JSON));
+    }
+
+    private ApiError buildFor(Exception ex, HttpStatus status, ErrorMessage.Type type) {
+        log.error(">> Ошибка при обработке REST запроса", ex);
         ApiError apiError = new ApiError();
         apiError.setUrl(ServletUriComponentsBuilder.fromCurrentRequest().build().getPath());
         apiError.setStatus(status.value());
