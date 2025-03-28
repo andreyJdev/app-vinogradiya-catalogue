@@ -5,13 +5,21 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Generated;
+import ru.vinogradiya.models.entity.Product_;
+import ru.vinogradiya.models.entity.Selection_;
+import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
+import ru.vinogradiya.utils.validation.annotation.UniqueNameUpdateConstraint;
 
 import java.util.Optional;
 
 @Data
+@UniqueNameUpdateConstraint(table = "product", column = Product_.NAME, message = "Сорт с именем: {0} уже существует")
 public class ProductUpdateDto {
 
-    //todo добавить аннотацию проверки уникальности
+    @NotNull
+    @Schema(description = "Идентификатор сорта")
+    private Long id;
+
     @NotNull
     @Size(min = 2, max = 32)
     @Schema(description = "Название сорта")
@@ -70,33 +78,42 @@ public class ProductUpdateDto {
     @Schema(description = "Продано черенков")
     private Integer soldCut;
 
-    //todo добавить аннотацию проверки существования, ели не null
+    @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "Селекция с идентификатором: {0} не найдена")
     @Schema(description = "Идентификатор селекции")
     private Integer selectionId;
 
+    public ProductUpdateDto(Long id) {
+        this.id = id;
+    }
+
+    @Generated
+    public String getName() {
+        return upperFirst(this.name);
+    }
+
     @Generated
     public String getTime() {
-        return blankToNull(this.time);
+        return upperFirst(blankToNull(this.time));
     }
 
     @Generated
     public String getStrength() {
-        return blankToNull(this.strength);
+        return upperFirst(blankToNull(this.strength));
     }
 
     @Generated
     public String getCluster() {
-        return blankToNull(this.cluster);
+        return upperFirst(blankToNull(this.cluster));
     }
 
     @Generated
     public String getBerry() {
-        return blankToNull(this.berry);
+        return upperFirst(blankToNull(this.berry));
     }
 
     @Generated
     public String getTaste() {
-        return blankToNull(this.taste);
+        return upperFirst(blankToNull(this.taste));
     }
 
     @Generated
@@ -116,12 +133,12 @@ public class ProductUpdateDto {
 
     @Generated
     public String getDescription() {
-        return blankToNull(this.description);
+        return upperFirst(blankToNull(this.description));
     }
 
     @Generated
     public String getSelectionMini() {
-        return blankToNull(this.description);
+        return upperFirst(blankToNull(this.description));
     }
 
     @Generated
@@ -151,6 +168,10 @@ public class ProductUpdateDto {
 
     private String blankToNull(String str) {
         return Optional.ofNullable(str).filter(s -> !s.isBlank()).orElse(null);
+    }
+
+    private String upperFirst(String str) {
+        return Optional.ofNullable(str).map(s -> s.length() > 1 ? s.substring(0, 1).toUpperCase() + s.substring(1) : s).orElse(null);
     }
 
     private Integer nullToZero(Integer num) {
