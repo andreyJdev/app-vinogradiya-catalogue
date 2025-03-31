@@ -13,6 +13,7 @@ import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.enums.ProductErrorMessage;
 
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 @Slf4j
@@ -30,7 +31,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
-    public ProductItemDto findById(Long id) {
+    public ProductItemDto findById(UUID id) {
         log.info(">> Запрос на получение сорта винограда с id: {}", id);
         return repository.findById(id).map(this::buildProductItemDto)
                 .orElseGet(() -> {

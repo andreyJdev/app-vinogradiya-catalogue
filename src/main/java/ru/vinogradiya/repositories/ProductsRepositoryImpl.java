@@ -1,6 +1,7 @@
 package ru.vinogradiya.repositories;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
@@ -12,6 +13,7 @@ import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.dto.ProductItemFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
@@ -22,6 +24,7 @@ import ru.vinogradiya.utils.common.PredicateManager;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
 @RequiredArgsConstructor
@@ -63,13 +66,29 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
+    public Optional<Product> findById(UUID id) {
         CriteriaQuery<Product> query = getCriteriaBuilder().createQuery(Product.class);
         Root<Product> product = query.from(Product.class);
 
         query.select(product)
                 .where(PredicateManager.builder(getCriteriaBuilder())
                         .addEqual(id, product.get(Product_.id))
+                        .buildArray()
+                );
+
+        List<Product> result = entityManager.createQuery(query).getResultList();
+
+        return result.stream().findFirst();
+    }
+
+    @Override
+    public Optional<Product> findByName(String name) {
+        CriteriaQuery<Product> query = getCriteriaBuilder().createQuery(Product.class);
+        Root<Product> product = query.from(Product.class);
+
+        query.select(product)
+                .where(PredicateManager.builder(getCriteriaBuilder())
+                        .addEqual(name, product.get(Product_.name))
                         .buildArray()
                 );
 
@@ -88,7 +107,63 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         return new Predicate[]{};
     }
 
+    @Override
+    public Product create(ProductCreateDto createDto) {
+
+        Selection selection = getSelectionById(Optional.ofNullable(createDto.getSelectionId())
+                .map(UUID::fromString).orElse(null));
+        Product product = buildProduct(createDto, selection);
+
+        if (selection != null) {
+            selection.getProducts().add(product);
+        }
+
+        entityManager.persist(product);
+
+        return product;
+    }
+
     private CriteriaBuilder getCriteriaBuilder() {
         return entityManager.getCriteriaBuilder();
+    }
+
+    private Selection getSelectionById(UUID selectionId) {
+        if (selectionId == null) {
+            return null;
+        }
+
+        CriteriaQuery<Selection> query = getCriteriaBuilder().createQuery(Selection.class);
+        Root<Selection> root = query.from(Selection.class);
+
+        try {
+            return entityManager.createQuery(query
+                            .select(root)
+                            .where(getCriteriaBuilder().equal(root.get(Selection_.id), selectionId)))
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
+    }
+
+    private Product buildProduct(ProductCreateDto createDto, Selection selection) {
+        return new Product(
+                UUID.randomUUID(),
+                createDto.getName(),
+                createDto.getTime(),
+                createDto.getStrength(),
+                createDto.getCluster(),
+                createDto.getBerry(),
+                createDto.getTaste(),
+                createDto.getResistanceCold(),
+                createDto.getPriceSeed(),
+                createDto.getPriceCut(),
+                createDto.getImage(),
+                createDto.getDescription(),
+                createDto.getSelectionMini(),
+                createDto.getAvailableSeed(),
+                createDto.getAvailableCut(),
+                createDto.getSoldSeed(),
+                createDto.getSoldCut(),
+                selection);
     }
 }

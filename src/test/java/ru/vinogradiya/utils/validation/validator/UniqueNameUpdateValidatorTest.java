@@ -18,6 +18,8 @@ import ru.vinogradiya.models.dto.ProductUpdateDto;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.utils.validation.annotation.UniqueNameUpdateConstraint;
 
+import java.util.UUID;
+
 @ExtendWith(MockitoExtension.class)
 class UniqueNameUpdateValidatorTest {
 
@@ -45,7 +47,7 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfValueIsNull() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(1L);
+        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
 
         // when
         boolean isValid = validator.isValid(updateDto, context);
@@ -60,7 +62,7 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfValueIsBlank(String value) {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(1L);
+        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
         updateDto.setName(value);
 
         // when
@@ -92,7 +94,7 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfEntityManagerDontReturnProduct() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(1L);
+        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
         updateDto.setName("name");
         Query query = Mockito.mock(Query.class);
 
@@ -112,10 +114,11 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfEntityManagerDoReturnSelfProduct() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(1L);
+        UUID id = UUID.randomUUID();
+        ProductUpdateDto updateDto = new ProductUpdateDto(id.toString());
         updateDto.setName("Name");
         Product found = new Product();
-        found.setId(1L);
+        found.setId(id);
         found.setName("Name");
 
         Query query = Mockito.mock(Query.class);
@@ -135,10 +138,10 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnFalseIfEntityManagerDoReturnOtherProductWithEqualName() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(2L);
+        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
         updateDto.setName("Name");
         Product found = new Product();
-        found.setId(1L);
+        found.setId(UUID.randomUUID());
         found.setName("Name");
 
         Query query = Mockito.mock(Query.class);

@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 @Builder
 @Schema(description = "Элемент получения сорта винограда")
@@ -12,7 +14,7 @@ public class ProductItemDto {
 
     @JsonView(ProductItemViews.Private.class)
     @Schema(description = "Идентификатор сорта")
-    private Long id;
+    private UUID id;
 
     @JsonView(ProductItemViews.UserAccess.class)
     @Schema(description = "Название сорта")

@@ -14,6 +14,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.FetchProfile;
 
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @FetchProfile(name = "withProduct", fetchOverrides = {
@@ -24,9 +25,10 @@ import java.util.List;
 @AllArgsConstructor
 @Table(name = "selection")
 public class Selection {
+
     @Id
     @Column(name = "id")
-    private Long id;
+    private UUID id;
 
     @Column(name = "name", unique = true)
     //todo @UniqueName(message = "Выберите другое Название селекции, это занято")

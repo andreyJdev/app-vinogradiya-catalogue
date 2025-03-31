@@ -20,7 +20,7 @@ import ru.vinogradiya.utils.common.exception.GlobalExceptionHandler;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.IntStream;
+import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -32,6 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ProductsControllerTest extends BaseMvcTest {
 
     private static final String REST_URL = "/v1/journal";
+    private static final UUID ID = UUID.randomUUID();
 
     private final List<Selection> selectionsSource = List.of(
             new Selection(), new Selection()
@@ -45,24 +46,21 @@ class ProductsControllerTest extends BaseMvcTest {
 
     @BeforeEach
     void setUp() {
-        IntStream.range(0, selectionsSource.size()).forEach(i -> selectionsSource.get(i).setId((long) i + 1));
-        IntStream.range(0, productsSource.size()).forEach(i -> productsSource.get(i).setId((long) i + 1));
+        selectionsSource.forEach(selection -> selection.setId(UUID.randomUUID()));
+        productsSource.forEach(product -> product.setId(UUID.randomUUID()));
 
         selectionsSource.get(0).setName("Криули");
         selectionsSource.get(0).setProducts(List.of(productsSource.get(0), productsSource.get(1), productsSource.get(2)));
         selectionsSource.get(1).setName("Ангуляй Воид Секевич");
         selectionsSource.get(1).setProducts(Collections.singletonList(productsSource.get(3)));
 
-        productsSource.get(0).setId(1L);
         productsSource.get(0).setName("Ахиллес");
         productsSource.get(0).setSelection(selectionsSource.get(0));
-        productsSource.get(1).setId(2L);
+        productsSource.get(1).setId(ID);
         productsSource.get(1).setName("Басанти");
         productsSource.get(1).setSelection(selectionsSource.get(0));
-        productsSource.get(2).setId(3L);
         productsSource.get(2).setName("Алиса");
         productsSource.get(2).setSelection(selectionsSource.get(0));
-        productsSource.get(3).setId(4L);
         productsSource.get(3).setName("Кузьмич");
         productsSource.get(3).setSelection(selectionsSource.get(1));
 
@@ -84,7 +82,7 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindById_shouldReturnIsNotFound() throws Exception {
 
         // given
-        long productId = 5L;
+        UUID productId = UUID.randomUUID();
 
         // when
         var result = mvc.perform(
@@ -98,12 +96,9 @@ class ProductsControllerTest extends BaseMvcTest {
     @DisplayName("Проверка получения сорта винограда по id, сорт существует")
     void testFindById_shouldReturnProductItem() throws Exception {
 
-        // given
-        long productId = 2L;
-
         // when
         var result = mvc.perform(
-                get(REST_URL + "/{productId}", productId));
+                get(REST_URL + "/{productId}", ID.toString()));
 
         // then
         result.andExpect(status().isOk())

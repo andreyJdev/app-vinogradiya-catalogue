@@ -16,6 +16,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
 
+import java.util.UUID;
+
 @ExtendWith(MockitoExtension.class)
 class PresentInDbValidatorTest {
 
@@ -85,7 +87,7 @@ class PresentInDbValidatorTest {
     void testIsValid_shouldReturnTrueIfEntityManagerDoReturnValue() {
 
         // given
-        Long value = 2L;
+        UUID value = UUID.randomUUID();
         Query query = Mockito.mock(Query.class);
 
         Mockito.when(manager.createNativeQuery(Mockito.anyString())).thenReturn(query);

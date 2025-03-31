@@ -2,6 +2,7 @@ package ru.vinogradiya.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.Generated;
@@ -75,9 +76,10 @@ public class ProductCreateDto {
     @Schema(description = "Продано черенков")
     private Integer soldCut;
 
+    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
     @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "Селекция с идентификатором: {0} не найдена")
     @Schema(description = "Идентификатор селекции")
-    private Integer selectionId;
+    private String selectionId;
 
     @Generated
     public String getName() {
@@ -155,8 +157,8 @@ public class ProductCreateDto {
     }
 
     @Generated
-    public Integer getSelectionId() {
-        return this.selectionId == 0 ? null : this.selectionId;
+    public String getSelectionId() {
+        return selectionId;
     }
 
     private String blankToNull(String str) {

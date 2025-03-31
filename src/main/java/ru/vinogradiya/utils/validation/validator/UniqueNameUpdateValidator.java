@@ -42,7 +42,7 @@ public class UniqueNameUpdateValidator implements ConstraintValidator<UniqueName
         Product found = ((Product) manager.createNativeQuery(query)
                 .setParameter("value", value)
                 .getSingleResult());
-        if (found != null && !Objects.equals(found.getId(), updateDto.getId())) {
+        if (found != null && !Objects.equals(found.getId().toString(), updateDto.getId())) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, value))
                     .addConstraintViolation();

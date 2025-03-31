@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -31,14 +32,16 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @ExtendWith(MockitoExtension.class)
 class ProductsServiceImplTest {
 
+    private static final UUID ID = UUID.randomUUID();
+
     private final List<Selection> selections = Arrays.asList(
-            new Selection(1L, "Новая", Collections.emptyList()),
-            new Selection(2L, "Старая", Collections.emptyList())
+            new Selection(UUID.randomUUID(), "Новая", Collections.emptyList()),
+            new Selection(UUID.randomUUID(), "Старая", Collections.emptyList())
     );
 
     private final List<Product> products = Arrays.asList(
             new Product(
-                    1L,
+                    UUID.randomUUID(),
                     "Деф1",
                     "Оч. ранний",
                     "Сильно-рослый",
@@ -58,7 +61,7 @@ class ProductsServiceImplTest {
                     selections.get(1)
             ),
             new Product(
-                    2L,
+                    ID,
                     "Деф2",
                     "Оч. ранний",
                     "Сильно-рослый",
@@ -111,10 +114,10 @@ class ProductsServiceImplTest {
     void testFindById_shouldReturnProductItem() {
 
         // given
-        Mockito.when(repository.findById(2L)).thenReturn(Optional.of(products.get(1)));
+        Mockito.when(repository.findById(ID)).thenReturn(Optional.of(products.get(1)));
 
         // when
-        ProductItemDto result = service.findById(2L);
+        ProductItemDto result = service.findById(ID);
 
         // then
         assertAll(
@@ -128,10 +131,11 @@ class ProductsServiceImplTest {
     void testFindById_shouldReturnNull() {
 
         // given
-        Mockito.when(repository.findById(3L)).thenReturn(Optional.empty());
+        UUID id = UUID.randomUUID();
+        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
 
         // when and then
-        assertThrows(ApiException.class, () -> service.findById(3L));
+        assertThrows(ApiException.class, () -> service.findById(id));
     }
 
     @Test
@@ -139,11 +143,12 @@ class ProductsServiceImplTest {
     void testFindById_shouldReturnProductItemWithNullSelection() {
 
         // given
+        UUID id = UUID.randomUUID();
         Product product = new Product();
-        Mockito.when(repository.findById(5L)).thenReturn(Optional.of(product));
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(product));
 
         // when
-        ProductItemDto result = service.findById(5L);
+        ProductItemDto result = service.findById(id);
 
         // then
         assertAll(

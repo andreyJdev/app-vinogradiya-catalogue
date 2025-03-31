@@ -22,6 +22,8 @@ import ru.vinogradiya.models.dto.ProductItemViews;
 import ru.vinogradiya.service.ProductsService;
 import ru.vinogradiya.utils.common.Paged;
 
+import java.util.UUID;
+
 @RestController
 @RequestMapping("/v1/journal")
 @Tag(name = "products", description = "Управление продуктами")
@@ -30,10 +32,10 @@ public class ProductsController {
 
     private final ProductsService service;
 
-    @GetMapping("{productId:\\d+}")
+    @GetMapping("{productId}")
     @JsonView(ProductItemViews.UserAccess.class)
     @Operation(description = "Получить сорт винограда по идентификатору")
-    public ResponseEntity<ProductItemDto> findById(@PathVariable Long productId) {
+    public ResponseEntity<ProductItemDto> findById(@PathVariable UUID productId) {
         ProductItemDto found = service.findById(productId);
         return ResponseEntity.ok(found);
     }
