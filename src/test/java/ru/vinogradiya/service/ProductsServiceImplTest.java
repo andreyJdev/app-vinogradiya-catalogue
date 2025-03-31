@@ -1,14 +1,16 @@
 package ru.vinogradiya.service;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.dto.ProductItemDto;
 import ru.vinogradiya.models.dto.ProductItemFilter;
 import ru.vinogradiya.models.entity.Product;
@@ -16,6 +18,8 @@ import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepositoryImpl;
 import ru.vinogradiya.utils.common.Paged;
 import ru.vinogradiya.utils.common.exception.ApiException;
+import ru.vinogradiya.utils.mapping.CatalogueMapper;
+import ru.vinogradiya.utils.mapping.ProductsMapper;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,11 +27,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @ExtendWith(MockitoExtension.class)
 class ProductsServiceImplTest {
@@ -81,11 +84,16 @@ class ProductsServiceImplTest {
                     selections.get(0))
     );
 
-    @InjectMocks
-    private ProductsServiceImpl service;
+    private ProductsService service;
 
     @Mock
     private ProductsRepositoryImpl repository;
+
+    @BeforeEach
+    void setUp() {
+        CatalogueMapper<ProductItemDto> mapper = new ProductsMapper();
+        service = new ProductsServiceImpl(mapper, repository);
+    }
 
     @Test
     @DisplayName("Проверка получения от репозитория данных и их преобразования в ProductItemDto")
@@ -100,7 +108,7 @@ class ProductsServiceImplTest {
         Paged<ProductItemDto> result = service.findAll(filter, pageable);
 
         // then
-        assertAll(
+        Assertions.assertAll(
                 () -> assertEquals(2, result.getContent().size()),
                 () -> assertEquals(2, result.getNumberOfElements()),
                 () -> assertEquals(products.get(0).getName(), result.getContent().get(0).getName()),
@@ -120,7 +128,7 @@ class ProductsServiceImplTest {
         ProductItemDto result = service.findById(ID);
 
         // then
-        assertAll(
+        Assertions.assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals(products.get(1).getName(), result.getName())
         );
@@ -135,7 +143,7 @@ class ProductsServiceImplTest {
         Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
 
         // when and then
-        assertThrows(ApiException.class, () -> service.findById(id));
+        Assertions.assertThrows(ApiException.class, () -> service.findById(id));
     }
 
     @Test
@@ -151,9 +159,30 @@ class ProductsServiceImplTest {
         ProductItemDto result = service.findById(id);
 
         // then
-        assertAll(
+        Assertions.assertAll(
                 () -> assertNotNull(result),
                 () -> assertNull(result.getSelection())
+        );
+    }
+
+    @Test
+    @DisplayName("Проверка добавления в репозиторий сорта винограда и его преобразования в ProductItemDto")
+    void testSave_shouldReturnProductItem() {
+
+        // given
+        ProductCreateDto createDto = new ProductCreateDto();
+        createDto.setName("Ангуляй Воид Секевич");
+        Product product = new Product();
+        product.setName(createDto.getName());
+        Mockito.when(repository.create(createDto)).thenReturn(product);
+
+        // when
+        ProductItemDto result = service.save(createDto);
+
+        // then
+        Assertions.assertAll(
+                () -> assertInstanceOf(ProductItemDto.class, result),
+                () -> assertEquals(createDto.getName(), result.getName())
         );
     }
 }

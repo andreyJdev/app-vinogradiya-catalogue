@@ -17,6 +17,7 @@ import ru.vinogradiya.repositories.ProductsRepositoryImpl;
 import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.GlobalExceptionHandler;
+import ru.vinogradiya.utils.mapping.ProductsMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class})
+@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class, ProductsMapper.class})
 @ContextConfiguration(classes = {ProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, GlobalExceptionHandler.class})
 class ProductsControllerTest extends BaseMvcTest {
 
