@@ -25,9 +25,9 @@ import ru.vinogradiya.utils.common.Paged;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/v1/journal")
-@Tag(name = "products", description = "Управление продуктами")
+@RequestMapping("/v1/products")
 @RequiredArgsConstructor
+@Tag(name = "products", description = "Получение продуктов")
 public class ProductsController {
 
     private final ProductsService service;

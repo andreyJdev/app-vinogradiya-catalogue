@@ -91,7 +91,7 @@ class PresentInDbValidatorTest {
         Query query = Mockito.mock(Query.class);
 
         Mockito.when(manager.createNativeQuery(Mockito.anyString())).thenReturn(query);
-        Mockito.when(query.setParameter("value", value.toString())).thenReturn(query);
+        Mockito.when(query.setParameter("value", value)).thenReturn(query);
         Mockito.when(query.getSingleResult()).thenReturn(1L);
 
         // when

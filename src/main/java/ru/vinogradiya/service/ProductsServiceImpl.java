@@ -1,5 +1,6 @@
 package ru.vinogradiya.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -43,6 +44,7 @@ public class ProductsServiceImpl implements ProductsService {
     }
 
     @Override
+    @Transactional
     public ProductItemDto save(ProductCreateDto dto) {
         log.info(">> Запрос на добавление сорта винограда с именем: {}", dto.getName());
         return productsMapper.toDomain(repository.create(dto));

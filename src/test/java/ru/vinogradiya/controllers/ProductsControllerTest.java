@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {ProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, GlobalExceptionHandler.class})
 class ProductsControllerTest extends BaseMvcTest {
 
-    private static final String REST_URL = "/v1/journal";
+    private static final String REST_URL = "/v1/products";
     private static final UUID ID = UUID.randomUUID();
 
     private final List<Selection> selectionsSource = List.of(

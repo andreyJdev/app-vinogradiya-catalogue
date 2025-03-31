@@ -2,10 +2,13 @@ package ru.vinogradiya.utils.validation.validator;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import ru.vinogradiya.utils.common.StringFormater;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
+
+import java.util.UUID;
 
 public class PresentInDbValidator implements ConstraintValidator<PresentInDbConstraint, Object> {
 
@@ -33,11 +36,16 @@ public class PresentInDbValidator implements ConstraintValidator<PresentInDbCons
             return true;
         }
 
-        String query = String.format("SELECT COUNT(*) FROM %s WHERE %s = :value", table, column);
-        long foundCount = ((Number) manager.createNativeQuery(query)
-                .setParameter("value", value)
-                .getSingleResult()).longValue();
-        if (foundCount < 1) {
+        Query query = manager.createNativeQuery(String
+                .format("SELECT COUNT(*) FROM %s WHERE %s = :value", table, column));
+        try {
+            query.setParameter("value", UUID.fromString(value));
+        } catch (IllegalArgumentException e) {
+            query.setParameter("value", value);
+        }
+        int count = ((Number) query.getSingleResult()).intValue();
+
+        if (count < 1) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, value))
                     .addConstraintViolation();
