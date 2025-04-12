@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import ru.vinogradiya.models.dto.ProductCreateDto;
-import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.models.dto.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
@@ -123,14 +123,14 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindAll_shouldReturnProductWithFilter() {
 
         // given
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(List.of(
                         selections.get(1).getName()
                 ))
                 .build();
 
         // when
-        Paged<Product> result = repository.findAll(filter, Pageable.unpaged());
+        Paged<Product> result = repository.findAll(null, filter, Pageable.unpaged());
 
         // then
         Assertions.assertAll(
@@ -147,7 +147,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         Pageable page = PageRequest.of(0, 2, SORT);
 
         // when
-        Paged<Product> result = repository.findAll(null, page);
+        Paged<Product> result = repository.findAll(null, null, page);
 
         // then
         Assertions.assertAll(
@@ -165,7 +165,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         Pageable page = PageRequest.of(1, 2, SORT);
 
         // when
-        Paged<Product> result = repository.findAll(null, page);
+        Paged<Product> result = repository.findAll(null, null, page);
 
         // then
         Assertions.assertAll(
@@ -206,12 +206,12 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     @Test
     @DisplayName("Метод findAll должен возвращать все Product, если все значения фильтра пустые")
     void testFindAll_shouldReturnProductsIfFilterHavaAllNulls() {
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(List.of(""))
                 .build();
         Pageable pageable = Pageable.unpaged();
 
-        Paged<Product> result = repository.findAll(filter, pageable);
+        Paged<Product> result = repository.findAll(null, filter, pageable);
 
         Assertions.assertEquals(result.getContent(), products);
     }
@@ -220,12 +220,12 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     @Test
     @DisplayName("Метод findAll должен возвращать все Product, если список в фильтре null")
     void testFindAll_shouldReturnProductsIfFilterListIsNull() {
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(null)
                 .build();
         Pageable pageable = Pageable.unpaged();
 
-        Paged<Product> result = repository.findAll(filter, pageable);
+        Paged<Product> result = repository.findAll(null, filter, pageable);
 
         Assertions.assertEquals(result.getContent(), products);
     }

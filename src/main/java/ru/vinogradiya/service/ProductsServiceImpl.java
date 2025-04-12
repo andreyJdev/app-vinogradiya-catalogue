@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.dto.ProductItemDto;
-import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.models.dto.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.Paged;
@@ -26,9 +26,9 @@ public class ProductsServiceImpl implements ProductsService {
     private final ProductsRepository repository;
 
     @Override
-    public Paged<ProductItemDto> findAll(ProductItemFilter filter, Pageable pageable) {
+    public Paged<ProductItemDto> findAll(String search, ProductFilter filter, Pageable pageable) {
         log.info(">> Запрос на получение всех сортов винограда с фильтром: {} и пагинацией: {}", filter, pageable);
-        Paged<Product> all = repository.findAll(filter, pageable);
+        Paged<Product> all = repository.findAll(null, filter, pageable);
         log.info(">> Найдено {} записей в журнале", all.getNumberOfElements());
         return all.map(productsMapper::toDomain);
     }

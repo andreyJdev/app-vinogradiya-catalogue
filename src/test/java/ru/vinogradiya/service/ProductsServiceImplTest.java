@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.dto.ProductItemDto;
-import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.models.dto.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepositoryImpl;
@@ -100,12 +100,12 @@ class ProductsServiceImplTest {
     void testFindAll_shouldReturnPagedProductItem() {
 
         // given
-        ProductItemFilter filter = ProductItemFilter.builder().build();
+        ProductFilter filter = ProductFilter.builder().build();
         Pageable pageable = PageRequest.of(0, 2);
-        Mockito.when(repository.findAll(filter, pageable)).thenReturn(new Paged<>(products));
+        Mockito.when(repository.findAll(null, filter, pageable)).thenReturn(new Paged<>(products));
 
         // when
-        Paged<ProductItemDto> result = service.findAll(filter, pageable);
+        Paged<ProductItemDto> result = service.findAll(null, filter, pageable);
 
         // then
         Assertions.assertAll(
@@ -114,7 +114,7 @@ class ProductsServiceImplTest {
                 () -> assertEquals(products.get(0).getName(), result.getContent().get(0).getName()),
                 () -> assertEquals(products.get(1).getName(), result.getContent().get(1).getName())
         );
-        Mockito.verify(repository, Mockito.times(1)).findAll(filter, pageable);
+        Mockito.verify(repository, Mockito.times(1)).findAll(null, filter, pageable);
     }
 
     @Test

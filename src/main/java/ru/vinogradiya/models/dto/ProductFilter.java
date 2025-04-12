@@ -9,7 +9,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Builder
-public class ProductItemFilter {
+public class ProductFilter {
 
     @Schema(description = "Название селекции")
     List<String> selections;

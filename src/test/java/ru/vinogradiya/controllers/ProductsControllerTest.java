@@ -10,10 +10,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import ru.vinogradiya.config.EntityManagerTestConfig;
 import ru.vinogradiya.config.InMemoryDbTestConfig;
-import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.ProductFilterRequest;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
+import ru.vinogradiya.queries.product.ProductFilterValuersSelectionQuery;
+import ru.vinogradiya.queries.product.SearchBarConditionBuilder;
 import ru.vinogradiya.repositories.ProductsRepositoryImpl;
+import ru.vinogradiya.repositories.ProductsRepositorySql;
 import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.GlobalExceptionHandler;
@@ -28,7 +32,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class, ProductsMapper.class})
+@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class, ProductsMapper.class,
+        ProductsRepositorySql.class, ProductFilterValuersSelectionQuery.class, SearchBarConditionBuilder.class})
 @ContextConfiguration(classes = {ProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, GlobalExceptionHandler.class})
 class ProductsControllerTest extends BaseMvcTest {
 
@@ -113,15 +118,19 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindAll_shouldReturnNotEmptyProductItemPaged() throws Exception {
 
         // given
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(List.of(""))
                 .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(null);
+        request.setFilterParams(filter);
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
         );
 
         // then
@@ -139,15 +148,19 @@ class ProductsControllerTest extends BaseMvcTest {
         // given
         int size = 2;
         String selection = "Криули";
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(List.of(selection))
                 .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(null);
+        request.setFilterParams(filter);
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
                         .param("page", "0")
                         .param("size", String.valueOf(size))
                         .param("sort", "name,desc"));
@@ -164,15 +177,19 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindAll_shouldNotReturnEmptyProductItemPaged() throws Exception {
 
         // given
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(List.of("fake"))
                 .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(null);
+        request.setFilterParams(filter);
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
         );
 
         // then
@@ -186,13 +203,13 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindAll_shouldNotReturnBadRequestStatus() throws Exception {
 
         // given
-        String filter = "IncorrectJson";
+        String request = "IncorrectJson";
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
         );
 
         // then

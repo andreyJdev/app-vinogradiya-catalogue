@@ -26,11 +26,15 @@ import java.util.UUID;
 @Table(name = "selection")
 public class Selection {
 
+    public static final String TABLE_NAME = "selection";
+    public static final String ID = "id";
+    public static final String NAME = "name";
+
     @Id
-    @Column(name = "id")
+    @Column(name = ID)
     private UUID id;
 
-    @Column(name = "name", unique = true)
+    @Column(name = NAME, unique = true)
     //todo @UniqueName(message = "Выберите другое Название селекции, это занято")
     @NotBlank(message = "Обязательное заполнение Названия селекции")
     @Size(max = 100, message = "Не больше 100 символов")

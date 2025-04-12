@@ -11,10 +11,11 @@ import jakarta.persistence.criteria.Order;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import ru.vinogradiya.models.dto.ProductCreateDto;
-import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.models.dto.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
@@ -33,7 +34,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
     private final EntityManager entityManager;
 
     @Override
-    public Paged<Product> findAll(ProductItemFilter filter, Pageable pageable) {
+    public Paged<Product> findAll(String search, ProductFilter filter, Pageable pageable) {
         CriteriaBuilder builder = getCriteriaBuilder();
         CriteriaQuery<Product> query = builder.createQuery(Product.class);
         Root<Product> product = query.from(Product.class);
@@ -97,7 +98,7 @@ public class ProductsRepositoryImpl implements ProductsRepository {
         return result.stream().findFirst();
     }
 
-    private Predicate[] buildPredicates(ProductItemFilter filter, Root<Product> product) {
+    private Predicate[] buildPredicates(ProductFilter filter, Root<Product> product) {
         if (filter != null) {
             Join<Product, Selection> selection = product.join(Product_.selection, JoinType.LEFT);
             return PredicateManager.builder(getCriteriaBuilder())
