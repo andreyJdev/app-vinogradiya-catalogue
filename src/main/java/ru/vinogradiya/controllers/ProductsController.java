@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -43,7 +44,7 @@ public class ProductsController {
     @PostMapping
     @JsonView(ProductItemViews.UserAccess.class)
     @Operation(description = "Получить все сорта винограда с параметрами")
-    public ResponseEntity<Paged<ProductItemDto>> findAll(
+    public ResponseEntity<Page<ProductItemDto>> findAll(
             @RequestBody ProductFilterRequest request,
             @PageableDefault(size = 8)
             @SortDefault.SortDefaults({
@@ -53,7 +54,7 @@ public class ProductsController {
             })
             @ParameterObject Pageable pageable
     ) {
-        Paged<ProductItemDto> found = service.findAll(request.getSearch(), request.getFilterParams(), pageable);
+        Page<ProductItemDto> found = service.findAll(request.getSearch(), request.getFilterParams(), pageable);
         return ResponseEntity.ok(found);
     }
 }

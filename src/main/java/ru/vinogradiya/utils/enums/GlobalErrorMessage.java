@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum GlobalErrorMessage implements ErrorMessage {
 
-    INVALID_JSON("Невалидный JSON", HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE);
+    INVALID_JSON("Невалидный JSON", HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE),
+    INTERNAL_ERROR("Внутренняя ошибка сервера", HttpStatus.INTERNAL_SERVER_ERROR, Type.VALIDATION_TYPE);
 
     private final String message;
     private final HttpStatus status;

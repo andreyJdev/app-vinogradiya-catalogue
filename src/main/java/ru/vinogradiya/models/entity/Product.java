@@ -6,6 +6,9 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
+import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,10 +17,24 @@ import lombok.NoArgsConstructor;
 import java.util.UUID;
 
 @Entity
+@NamedEntityGraph(
+        name = "Product.findAll",
+        attributeNodes = {
+                @NamedAttributeNode(value = Selection.TABLE_NAME, subgraph = Selection.TABLE_NAME + '.' + Selection.PRODUCTS)
+        },
+        subgraphs = {
+                @NamedSubgraph(
+                        name = Selection.TABLE_NAME + '.' + Selection.PRODUCTS,
+                        attributeNodes = {
+                                @NamedAttributeNode(Selection.PRODUCTS)
+                        }
+                )
+        }
+)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "product")
+@Table(name = Product.TABLE_NAME)
 public class Product {
 
     public static final String TABLE_NAME = "product";

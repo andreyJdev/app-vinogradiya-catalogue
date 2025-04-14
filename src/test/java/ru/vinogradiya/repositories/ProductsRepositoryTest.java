@@ -7,7 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Import;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -17,7 +18,6 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.utils.JpaRepositoryBasedTest;
-import ru.vinogradiya.utils.common.Paged;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ru.vinogradiya.queries.product.ProductSpecificationBuilder.buildSpecificationFrom;
 
-@Import({ProductsRepositoryImpl.class})
 public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
     private static final UUID ID = UUID.randomUUID();
@@ -130,7 +130,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
                 .build();
 
         // when
-        Paged<Product> result = repository.findAll(null, filter, Pageable.unpaged());
+        Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), Pageable.unpaged());
 
         // then
         Assertions.assertAll(
@@ -145,9 +145,10 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
         // given
         Pageable page = PageRequest.of(0, 2, SORT);
+        ProductFilter filter = ProductFilter.builder().build();
 
         // when
-        Paged<Product> result = repository.findAll(null, null, page);
+        Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), page);
 
         // then
         Assertions.assertAll(
@@ -163,9 +164,10 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
         // given
         Pageable page = PageRequest.of(1, 2, SORT);
+        ProductFilter filter = ProductFilter.builder().build();
 
         // when
-        Paged<Product> result = repository.findAll(null, null, page);
+        Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), page);
 
         // then
         Assertions.assertAll(
@@ -193,13 +195,10 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindByName_shouldReturnProducts() {
 
         // when
-        Optional<Product> result = repository.findByName(NAME);
+        Product result = repository.findAllByNameIn(Collections.singletonList(NAME)).get(0);
 
         // then
-        Assertions.assertAll(
-                () -> assertTrue(result.isPresent()),
-                () -> assertEquals(NAME, result.map(Product::getName).orElse(null))
-        );
+        assertEquals(NAME, result.getName());
     }
 
     //todo вынести в тест фильтра
@@ -211,9 +210,14 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
                 .build();
         Pageable pageable = Pageable.unpaged();
 
-        Paged<Product> result = repository.findAll(null, filter, pageable);
+        Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), pageable);
 
-        Assertions.assertEquals(result.getContent(), products);
+        Assertions.assertAll(
+                () -> assertEquals(products.size(), result.getContent().size()),
+                () -> assertTrue(result.getContent().contains(products.get(0))),
+                () -> assertTrue(result.getContent().contains(products.get(1))),
+                () -> assertTrue(result.getContent().contains(products.get(2)))
+        );
     }
 
     //todo вынести в тест фильтра
@@ -225,9 +229,14 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
                 .build();
         Pageable pageable = Pageable.unpaged();
 
-        Paged<Product> result = repository.findAll(null, filter, pageable);
+        Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), pageable);
 
-        Assertions.assertEquals(result.getContent(), products);
+        Assertions.assertAll(
+                () -> assertEquals(products.size(), result.getContent().size()),
+                () -> assertTrue(result.getContent().contains(products.get(0))),
+                () -> assertTrue(result.getContent().contains(products.get(1))),
+                () -> assertTrue(result.getContent().contains(products.get(2)))
+        );
     }
 
     @Test
@@ -238,12 +247,12 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         ProductCreateDto dto = new ProductCreateDto();
         dto.setName(name);
 
-        Product expected = repository.create(dto);
-        Product result = repository.findByName(name).orElse(null);
+        repository.create(dto);
+        Product result = repository.findAllByNameIn(Collections.singletonList(name)).get(0);
 
         Assertions.assertAll(
                 () -> assertNotNull(result),
-                () -> assertEquals(expected.getId(), result != null ? result.getId() : null)
+                () -> assertEquals(name, result.getName())
         );
     }
 }

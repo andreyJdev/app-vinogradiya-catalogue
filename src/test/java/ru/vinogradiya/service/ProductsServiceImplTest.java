@@ -8,15 +8,17 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import ru.vinogradiya.models.dto.ProductCreateDto;
-import ru.vinogradiya.models.dto.ProductItemDto;
 import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.ProductItemDto;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
-import ru.vinogradiya.repositories.ProductsRepositoryImpl;
-import ru.vinogradiya.utils.common.Paged;
+import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.mapping.CatalogueMapper;
 import ru.vinogradiya.utils.mapping.ProductsMapper;
@@ -31,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class ProductsServiceImplTest {
@@ -87,7 +90,7 @@ class ProductsServiceImplTest {
     private ProductsService service;
 
     @Mock
-    private ProductsRepositoryImpl repository;
+    private ProductsRepository repository;
 
     @BeforeEach
     void setUp() {
@@ -96,16 +99,19 @@ class ProductsServiceImplTest {
     }
 
     @Test
+    @SuppressWarnings(value = "unchecked")
     @DisplayName("Проверка получения от репозитория данных и их преобразования в ProductItemDto")
     void testFindAll_shouldReturnPagedProductItem() {
 
         // given
         ProductFilter filter = ProductFilter.builder().build();
         Pageable pageable = PageRequest.of(0, 2);
-        Mockito.when(repository.findAll(null, filter, pageable)).thenReturn(new Paged<>(products));
+        Page<Product> expected = new PageImpl<>(products, pageable, products.size());
+
+        Mockito.when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expected);
 
         // when
-        Paged<ProductItemDto> result = service.findAll(null, filter, pageable);
+        Page<ProductItemDto> result = service.findAll(null, filter, pageable);
 
         // then
         Assertions.assertAll(
@@ -114,7 +120,7 @@ class ProductsServiceImplTest {
                 () -> assertEquals(products.get(0).getName(), result.getContent().get(0).getName()),
                 () -> assertEquals(products.get(1).getName(), result.getContent().get(1).getName())
         );
-        Mockito.verify(repository, Mockito.times(1)).findAll(null, filter, pageable);
+        Mockito.verify(repository, Mockito.times(1)).findAll(any(Specification.class), any(Pageable.class));
     }
 
     @Test
@@ -174,7 +180,9 @@ class ProductsServiceImplTest {
         createDto.setName("Ангуляй Воид Секевич");
         Product product = new Product();
         product.setName(createDto.getName());
-        Mockito.when(repository.create(createDto)).thenReturn(product);
+        Mockito.doNothing().when(repository).create(createDto);
+        Mockito.when(repository.findAllByNameIn(Collections.singletonList(createDto.getName())))
+                .thenReturn(Collections.singletonList(product));
 
         // when
         ProductItemDto result = service.save(createDto);

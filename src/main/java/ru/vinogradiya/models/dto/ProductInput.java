@@ -8,7 +8,9 @@ import lombok.Generated;
 import ru.vinogradiya.models.entity.Selection_;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
 
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 
 @Data
 public abstract class ProductInput {
@@ -142,8 +144,8 @@ public abstract class ProductInput {
     }
 
     @Generated
-    public String getSelectionId() {
-        return blankToNull(this.selectionId);
+    public UUID getSelectionId() {
+        return Objects.nonNull(blankToNull(this.selectionId)) ? UUID.fromString(this.selectionId) : null;
     }
 
     protected String blankToNull(String str) {

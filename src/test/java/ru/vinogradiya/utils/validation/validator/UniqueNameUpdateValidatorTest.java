@@ -73,23 +73,6 @@ class UniqueNameUpdateValidatorTest {
     }
 
     @Test
-    @DisplayName("Должен возвращать false, если updateDto.id = null")
-    void testIsValid_shouldReturnFalseIfDtoIdIsNull() {
-
-        // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(null);
-        updateDto.setName("name");
-
-        Mockito.when(context.buildConstraintViolationWithTemplate(Mockito.anyString())).thenReturn(this.violationBuilder);
-
-        // when
-        boolean isValid = validator.isValid(updateDto, context);
-
-        // then
-        Assertions.assertFalse(isValid);
-    }
-
-    @Test
     @DisplayName("Должен возвращать true, если entityManager не вернет объект из бд (имя свободно)")
     void testIsValid_shouldReturnTrueIfEntityManagerDontReturnProduct() {
 

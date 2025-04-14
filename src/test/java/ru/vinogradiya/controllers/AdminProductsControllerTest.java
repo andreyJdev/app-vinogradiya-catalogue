@@ -11,10 +11,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import ru.vinogradiya.config.EntityManagerTestConfig;
 import ru.vinogradiya.config.InMemoryDbTestConfig;
+import ru.vinogradiya.config.JpaRepositoryTestConfig;
 import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
-import ru.vinogradiya.repositories.ProductsRepositoryImpl;
+import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.GlobalExceptionHandler;
@@ -28,8 +29,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class, ProductsMapper.class})
-@ContextConfiguration(classes = {AdminProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, GlobalExceptionHandler.class})
+@Import({ProductsServiceImpl.class, ProductsMapper.class})
+@ContextConfiguration(classes = {AdminProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, JpaRepositoryTestConfig.class, GlobalExceptionHandler.class})
 class AdminProductsControllerTest extends BaseMvcTest {
 
     private static final String REST_URL = "/v1/admin/products";
