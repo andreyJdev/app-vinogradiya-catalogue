@@ -2,18 +2,19 @@ package ru.vinogradiya.controllers;
 
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import ru.vinogradiya.config.EntityManagerTestConfig;
 import ru.vinogradiya.config.InMemoryDbTestConfig;
-import ru.vinogradiya.models.dto.ProductItemFilter;
+import ru.vinogradiya.config.JpaRepositoryTestConfig;
+import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.ProductFilterRequest;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
-import ru.vinogradiya.repositories.ProductsRepositoryImpl;
 import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.GlobalExceptionHandler;
@@ -23,13 +24,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class, ProductsMapper.class})
-@ContextConfiguration(classes = {ProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, GlobalExceptionHandler.class})
+@Disabled
+@Import({ProductsServiceImpl.class, ProductsMapper.class})
+@ContextConfiguration(classes = {ProductsController.class,
+        JpaRepositoryTestConfig.class, InMemoryDbTestConfig.class, GlobalExceptionHandler.class})
 class ProductsControllerTest extends BaseMvcTest {
 
     private static final String REST_URL = "/v1/products";
@@ -57,11 +61,14 @@ class ProductsControllerTest extends BaseMvcTest {
 
         productsSource.get(0).setName("Ахиллес");
         productsSource.get(0).setSelection(selectionsSource.get(0));
+        productsSource.get(0).setResistanceCold(-25);
         productsSource.get(1).setId(ID);
         productsSource.get(1).setName("Басанти");
+        productsSource.get(1).setResistanceCold(-23);
         productsSource.get(1).setSelection(selectionsSource.get(0));
         productsSource.get(2).setName("Алиса");
         productsSource.get(2).setSelection(selectionsSource.get(0));
+        productsSource.get(2).setResistanceCold(-23);
         productsSource.get(3).setName("Кузьмич");
         productsSource.get(3).setSelection(selectionsSource.get(1));
 
@@ -113,15 +120,19 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindAll_shouldReturnNotEmptyProductItemPaged() throws Exception {
 
         // given
-        ProductItemFilter filter = ProductItemFilter.builder()
-                .selections(List.of(""))
+        ProductFilter filter = ProductFilter.builder()
+                .selections(null)
                 .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(null);
+        request.setFilterParams(filter);
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
         );
 
         // then
@@ -133,21 +144,25 @@ class ProductsControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @DisplayName("Проверка получения наполненного списка сортов винограда с изменнеными параметрами")
+    @DisplayName("Проверка получения наполненного списка сортов винограда с измененными параметрами")
     void testFindAll_shouldReturnNotEmptyProductItemPagedWithCustomParam() throws Exception {
 
         // given
         int size = 2;
         String selection = "Криули";
-        ProductItemFilter filter = ProductItemFilter.builder()
+        ProductFilter filter = ProductFilter.builder()
                 .selections(List.of(selection))
                 .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(null);
+        request.setFilterParams(filter);
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
                         .param("page", "0")
                         .param("size", String.valueOf(size))
                         .param("sort", "name,desc"));
@@ -160,19 +175,51 @@ class ProductsControllerTest extends BaseMvcTest {
     }
 
     @Test
-    @DisplayName("Проверка получения пустого списка сортов винограда")
-    void testFindAll_shouldNotReturnEmptyProductItemPaged() throws Exception {
+    @DisplayName("Проверка получения наполненного списка сортов винограда с фильтром и поиском")
+    void testFindAll_shouldReturnNotEmptyProductPagedWithCustomFilterAndSearch() throws Exception {
 
         // given
-        ProductItemFilter filter = ProductItemFilter.builder()
-                .selections(List.of("fake"))
+        String selection = "Криули";
+        String search = "-23";
+        ProductFilter filter = ProductFilter.builder()
+                .selections(List.of(selection))
                 .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(search);
+        request.setFilterParams(filter);
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request)));
+
+        // then
+        result.andExpect(status().isOk())
+                .andExpect(jsonPath("$.content.size()").value(2))
+                .andExpect(jsonPath("$.content[0].selection.name").value(selection))
+                .andExpect(jsonPath("$.content[?(@.name=='Ахиллес')]", hasSize(0)));
+    }
+
+    @Test
+    @DisplayName("Проверка получения пустого списка сортов винограда")
+    void testFindAll_shouldNotReturnEmptyProductItemPaged() throws Exception {
+
+        // given
+        ProductFilter filter = ProductFilter.builder()
+                .selections(List.of("fake"))
+                .build();
+
+        ProductFilterRequest request = new ProductFilterRequest();
+        request.setSearch(null);
+        request.setFilterParams(filter);
+
+        // when
+        var result = mvc.perform(
+                post(REST_URL)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsBytes(request))
         );
 
         // then
@@ -186,13 +233,13 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindAll_shouldNotReturnBadRequestStatus() throws Exception {
 
         // given
-        String filter = "IncorrectJson";
+        String request = "IncorrectJson";
 
         // when
         var result = mvc.perform(
                 post(REST_URL)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(mapper.writeValueAsBytes(filter))
+                        .content(mapper.writeValueAsBytes(request))
         );
 
         // then

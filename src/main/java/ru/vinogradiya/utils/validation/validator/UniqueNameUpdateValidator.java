@@ -31,18 +31,13 @@ public class UniqueNameUpdateValidator implements ConstraintValidator<UniqueName
         String value = updateDto.getName();
         if (value == null || value.isBlank()) {
             return true;
-        } else if (updateDto.getId() == null) {
-            context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate("Непредвиденная ошибка")
-                    .addConstraintViolation();
-            return false;
         }
 
         String query = String.format("SELECT COUNT(*) FROM %s WHERE %s = :value", table, column);
         Product found = ((Product) manager.createNativeQuery(query)
                 .setParameter("value", value)
                 .getSingleResult());
-        if (found != null && !Objects.equals(found.getId().toString(), updateDto.getId())) {
+        if (found != null && !Objects.equals(found.getId(), updateDto.getId())) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, value))
                     .addConstraintViolation();

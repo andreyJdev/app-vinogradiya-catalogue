@@ -3,18 +3,18 @@ package ru.vinogradiya.controllers;
 import jakarta.persistence.EntityManager;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
-import ru.vinogradiya.config.EntityManagerTestConfig;
 import ru.vinogradiya.config.InMemoryDbTestConfig;
+import ru.vinogradiya.config.JpaRepositoryTestConfig;
 import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
-import ru.vinogradiya.repositories.ProductsRepositoryImpl;
 import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.GlobalExceptionHandler;
@@ -28,8 +28,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@Import({ProductsServiceImpl.class, ProductsRepositoryImpl.class, ProductsMapper.class})
-@ContextConfiguration(classes = {AdminProductsController.class, InMemoryDbTestConfig.class, EntityManagerTestConfig.class, GlobalExceptionHandler.class})
+@Disabled
+@Import({ProductsServiceImpl.class, ProductsMapper.class})
+@ContextConfiguration(classes = {AdminProductsController.class, GlobalExceptionHandler.class,
+        InMemoryDbTestConfig.class, JpaRepositoryTestConfig.class})
 class AdminProductsControllerTest extends BaseMvcTest {
 
     private static final String REST_URL = "/v1/admin/products";

@@ -9,6 +9,7 @@ import ru.vinogradiya.models.entity.Selection_;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Data
 public abstract class ProductInput {
@@ -142,8 +143,9 @@ public abstract class ProductInput {
     }
 
     @Generated
-    public String getSelectionId() {
-        return blankToNull(this.selectionId);
+    public UUID getSelectionId() {
+        return Optional.ofNullable(blankToNull(this.selectionId))
+                .map(UUID::fromString).orElse(null);
     }
 
     protected String blankToNull(String str) {
