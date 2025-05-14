@@ -16,6 +16,7 @@ import org.springframework.data.jpa.domain.Specification;
 import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.dto.ProductFilter;
 import ru.vinogradiya.models.dto.ProductItemDto;
+import ru.vinogradiya.models.dto.ProductUpdateDto;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepository;
@@ -181,8 +182,8 @@ class ProductsServiceImplTest {
         Product product = new Product();
         product.setName(createDto.getName());
         Mockito.doNothing().when(repository).create(createDto);
-        Mockito.when(repository.findAllByNameIn(Collections.singletonList(createDto.getName())))
-                .thenReturn(Collections.singletonList(product));
+        Mockito.when(repository.findById(createDto.getId()))
+                .thenReturn(Optional.of(product));
 
         // when
         ProductItemDto result = service.save(createDto);
@@ -191,6 +192,29 @@ class ProductsServiceImplTest {
         Assertions.assertAll(
                 () -> assertInstanceOf(ProductItemDto.class, result),
                 () -> assertEquals(createDto.getName(), result.getName())
+        );
+    }
+
+    @Test
+    @DisplayName("Проверка обновления сорта винограда и его преобразования в ProductItemDto")
+    void testUpdate_shouldReturnProductItem() {
+
+        // given
+        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
+        updateDto.setName("Алиса");
+        Product product = new Product();
+        product.setName(updateDto.getName());
+        Mockito.doNothing().when(repository).update(updateDto);
+        Mockito.when(repository.findById(updateDto.getId()))
+                .thenReturn(Optional.of(product));
+
+        // when
+        ProductItemDto result = service.update(updateDto);
+
+        // then
+        Assertions.assertAll(
+                () -> assertInstanceOf(ProductItemDto.class, result),
+                () -> assertEquals(updateDto.getName(), result.getName())
         );
     }
 }
