@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -27,32 +28,15 @@ public class ProductFilter {
     Set<String> selections;
 
     public Set<String> getNames() {
-        return Optional.ofNullable(names)
-                .map(namesList -> namesList.stream()
-                        .map(name -> Optional.ofNullable(name)
-                                .filter(n -> !n.isBlank())
-                                .orElse(null))
-                        .collect(Collectors.toSet()))
-                .orElse(Collections.emptySet());
+        return filterStringCollectionToStringSet(names);
     }
 
     public Set<Integer> getResistances() {
-        return Optional.ofNullable(resistances)
-                .map(rList -> rList.stream()
-                        .filter(r -> Objects.nonNull(r) && !r.isBlank())
-                        .map(r -> Integer.parseInt(r.trim()))
-                        .collect(Collectors.toSet()))
-                .orElse(Collections.emptySet());
+        return filterStringCollectionToIntSet(resistances);
     }
 
     public Set<String> getSelections() {
-        return Optional.ofNullable(selections)
-                .map(selectionsList -> selectionsList.stream()
-                        .map(selection -> Optional.ofNullable(selection)
-                                .filter(s -> !s.isBlank())
-                                .orElse(null))
-                        .collect(Collectors.toSet()))
-                .orElse(Collections.emptySet());
+        return filterStringCollectionToStringSet(selections);
     }
 
     public void setNames(List<String> names) {
@@ -91,5 +75,21 @@ public class ProductFilter {
 
     public ProductFilter build() {
         return this;
+    }
+
+    private Set<String> filterStringCollectionToStringSet(Collection<String> input) {
+        return Optional.ofNullable(input)
+                .map(list -> list.stream()
+                        .map(it -> Objects.isNull(it) || it.isBlank() ? null : it.trim())
+                        .collect(Collectors.toSet()))
+                .orElse(Collections.emptySet());
+    }
+
+    private Set<Integer> filterStringCollectionToIntSet(Collection<String> input) {
+        return Optional.ofNullable(input)
+                .map(list -> list.stream()
+                        .map(it -> Objects.isNull(it) || it.isBlank() ? null : Integer.parseInt(it.trim()))
+                        .collect(Collectors.toSet()))
+                .orElse(Collections.emptySet());
     }
 }

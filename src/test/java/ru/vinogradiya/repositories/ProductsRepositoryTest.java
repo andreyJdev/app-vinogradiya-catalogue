@@ -243,36 +243,20 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         );
     }
 
-    //todo вынести в тест фильтра
-    @Test
-    @DisplayName("Метод findAll должен возвращать все Product, если все значения фильтра пустые")
-    void testFindAll_shouldReturnProductsIfFilterHavaAllNulls() {
-        ProductFilter filter = ProductFilter.builder()
-                .selections(Collections.emptyList())
-                .build();
-        Pageable pageable = Pageable.unpaged();
-
-        Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), pageable);
-
-        Assertions.assertAll(
-                () -> assertEquals(products.size(), result.getContent().size()),
-                () -> assertTrue(result.getContent().contains(products.get(0))),
-                () -> assertTrue(result.getContent().contains(products.get(1))),
-                () -> assertTrue(result.getContent().contains(products.get(2)))
-        );
-    }
-
-    //todo вынести в тест фильтра
     @Test
     @DisplayName("Метод findAll должен возвращать все Product, если список в фильтре null")
     void testFindAll_shouldReturnProductsIfFilterListIsNull() {
+
+        // given
         ProductFilter filter = ProductFilter.builder()
                 .selections(null)
                 .build();
         Pageable pageable = Pageable.unpaged();
 
+        // when
         Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), pageable);
 
+        // then
         Assertions.assertAll(
                 () -> assertEquals(products.size(), result.getContent().size()),
                 () -> assertTrue(result.getContent().contains(products.get(0))),
@@ -305,9 +289,11 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         dto.setSoldSeed("2");
         dto.setSoldCut("3");
 
+        // when
         repository.create(dto);
         Product result = repository.findAllByNameIn(Collections.singletonList(name)).get(0);
 
+        // then
         Assertions.assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals(name, result.getName())
