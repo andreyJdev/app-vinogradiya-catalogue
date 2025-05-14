@@ -11,6 +11,7 @@ public class MessageUtil {
 
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("messages", Locale.getDefault());
 
+    public static final String UUID_PATTERN = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$";
     public static final String NUMBER_PATTERN = "^(0|[1-9]\\d*|-[1-9]\\d*)$";
     public static final String POSITIVE_NUMBER_PATTERN = "^(0|[1-9]\\d*)$";
     public static final String POSITIVE_FLOAT_PATTERN = "^(0|[1-9]\\d*)(\\.\\d+)?$";

@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
 import ru.vinogradiya.models.dto.ProductCreateDto;
+import ru.vinogradiya.models.dto.ProductUpdateDto;
 import ru.vinogradiya.models.entity.Product;
 
 import java.util.List;
@@ -62,4 +63,28 @@ public interface ProductsRepository extends JpaRepository<Product, UUID>,
             """, nativeQuery = true)
     @Modifying
     void create(ProductCreateDto dto);
+
+    @Query(value = """
+            UPDATE Product p SET
+            p.name = :#{#dto.name},
+            p.time = :#{#dto.time},
+            p.strength = :#{#dto.strength},
+            p.cluster = :#{#dto.cluster},
+            p.berry = :#{#dto.berry},
+            p.taste = :#{#dto.taste},
+            p.resistanceCold = :#{#dto.resistanceCold},
+            p.priceSeed = :#{#dto.priceSeed},
+            p.priceCut = :#{#dto.priceCut},
+            p.image = :#{#dto.image},
+            p.description = :#{#dto.description},
+            p.selectionMini = :#{#dto.selectionMini},
+            p.availableSeed = :#{#dto.availableSeed},
+            p.availableCut = :#{#dto.availableCut},
+            p.soldSeed = :#{#dto.soldSeed},
+            p.soldCut = :#{#dto.soldCut},
+            p.selection = :#{#dto.selectionId}
+            WHERE p.id = :#{#dto.id}
+            """)
+    @Modifying
+    void update(ProductUpdateDto dto);
 }

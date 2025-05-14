@@ -1,7 +1,5 @@
 package ru.vinogradiya.repositories;
 
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,8 +9,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.context.jdbc.Sql;
 import ru.vinogradiya.models.dto.ProductCreateDto;
 import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.ProductUpdateDto;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
@@ -21,6 +21,7 @@ import ru.vinogradiya.utils.JpaRepositoryBasedTest;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -126,17 +127,14 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
             )
     );
 
-    @PersistenceContext
-    private EntityManager manager;
-
     @Autowired
     private ProductsRepository repository;
 
     @BeforeEach
     void setUp() {
-        selections.forEach(selection -> manager.persist(selection));
-        products.forEach(product -> manager.persist(product));
-        manager.flush();
+        selections.forEach(selection -> entityManager.persist(selection));
+        products.forEach(product -> entityManager.persist(product));
+        entityManager.flush();
     }
 
     @Test
@@ -270,8 +268,11 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testCreate_shouldCreateProduct() {
 
         // given
-        String name = "Ангуляй Воид Секевич";
         ProductCreateDto dto = new ProductCreateDto();
+
+        UUID productId = dto.getId();
+        String name = "Ангуляй Воид Секевич";
+
         dto.setName(name);
         dto.setTime("Время созревания");
         dto.setStrength("Сила роста");
@@ -289,14 +290,51 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         dto.setSoldSeed("2");
         dto.setSoldCut("3");
 
+        var query = entityManager.getEntityManager().createQuery(
+                "SELECT p FROM Product p WHERE p.id = :id",
+                Product.class
+        );
+        query.setParameter("id", productId);
+
         // when
         repository.create(dto);
-        Product result = repository.findAllByNameIn(Collections.singletonList(name)).get(0);
+        Product result = query.getSingleResult();
 
         // then
         Assertions.assertAll(
                 () -> assertNotNull(result),
                 () -> assertEquals(name, result.getName())
+        );
+    }
+
+    @Test
+    @Sql("/db/sql-test-data/product.sql")
+    @DisplayName("Метод update должен обновить существующий продукт, поле должно быть изменено")
+    void testUpdate_shouldUpdateProduct() {
+
+        // given
+        String productId = "04f5e733-8680-40a8-b304-33e14d38ad2d";
+        String name = "Ангуляй Воид Секевич";
+
+        ProductUpdateDto dto = new ProductUpdateDto(productId);
+        dto.setName(name);
+        dto.setTime("Изменено");
+
+        var query = entityManager.getEntityManager().createQuery(
+                "SELECT p FROM Product p WHERE p.id = :id",
+                Product.class
+        );
+        query.setParameter("id", UUID.fromString(productId));
+
+        // when
+        repository.update(dto);
+        Product result = query.getSingleResult();
+
+        // then
+        Assertions.assertTrue(Objects.nonNull(result));
+        Assertions.assertAll(
+                () -> assertEquals(name, result.getName()),
+                () -> assertEquals("Изменено", result.getTime())
         );
     }
 }

@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: app-vinogradiya-catalogue
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        default_schema: main
+  liquibase:
+    change-log: classpath:db/changelog/changelog-test.yml
+    drop-first: true
+    default-schema: public
+    enabled: true
+zonky:
+  test:
+    database:
+      postgres:
+        client:
+          properties:
+            currentSchema: main

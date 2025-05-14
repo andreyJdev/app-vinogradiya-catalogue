@@ -1,15 +1,14 @@
 package ru.vinogradiya.utils;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.Import;
-import ru.vinogradiya.config.InMemoryDbTestConfig;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 
 @DataJpaTest
-@Slf4j
-@Import(InMemoryDbTestConfig.class)
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY)
 public class JpaRepositoryBasedTest extends BaseApplicationTest {
 
+    @Autowired
+    protected TestEntityManager entityManager;
 }

@@ -14,12 +14,14 @@ import ru.vinogradiya.utils.validation.annotation.UniqueNameUpdateConstraint;
 import java.util.Optional;
 import java.util.UUID;
 
+import static ru.vinogradiya.utils.common.string.MessageUtil.UUID_PATTERN;
+
 @UniqueNameUpdateConstraint(table = "product", column = Product_.NAME)
 public class ProductUpdateDto extends ProductInput {
 
     @JsonIgnore
     @NotNull(message = "vinogradiya.catalogue.base.not_null")
-    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", message = "{vinogradiya.catalogue.base.uuid}")
+    @Pattern(regexp = UUID_PATTERN, message = "{vinogradiya.catalogue.base.uuid}")
     @Schema(description = "Идентификатор сорта")
     private final String id;
 
