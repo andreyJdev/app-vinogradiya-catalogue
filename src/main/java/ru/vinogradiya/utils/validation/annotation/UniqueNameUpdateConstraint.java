@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueNameUpdateConstraint {
 
-    String message() default "Указанное имя уже существует";
+    String message() default "Сорт с именем: {0} уже существует";
 
     Class<?>[] groups() default {};
 

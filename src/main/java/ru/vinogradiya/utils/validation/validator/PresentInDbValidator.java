@@ -5,10 +5,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ru.vinogradiya.utils.common.StringFormater;
+import ru.vinogradiya.utils.common.string.StringFormater;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
 
 import java.util.UUID;
+
+import static ru.vinogradiya.utils.common.string.MessageUtil.messageSource;
 
 public class PresentInDbValidator implements ConstraintValidator<PresentInDbConstraint, Object> {
 
@@ -22,7 +24,7 @@ public class PresentInDbValidator implements ConstraintValidator<PresentInDbCons
     public void initialize(PresentInDbConstraint constraintAnnotation) {
         this.table = constraintAnnotation.table();
         this.column = constraintAnnotation.column();
-        this.message = constraintAnnotation.message();
+        this.message = messageSource(constraintAnnotation.message());
     }
 
     @Override

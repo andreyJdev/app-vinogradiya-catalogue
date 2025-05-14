@@ -11,64 +11,83 @@ import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
 import java.util.Optional;
 import java.util.UUID;
 
+import static ru.vinogradiya.utils.common.string.MessageUtil.NUMBER_PATTERN;
+import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_FLOAT_PATTERN;
+import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_NUMBER_PATTERN;
+import static ru.vinogradiya.utils.common.string.StringFormater.toTitleCase;
+
 @Data
 public abstract class ProductInput {
 
-    @Size(max = 32)
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Время созревания")
     private String time;
 
-    @Size(max = 32)
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Сила роста")
     private String strength;
 
-    @Size(max = 32)
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Описание особенностей грозди")
     private String cluster;
 
-    @Size(max = 64)
+    @Size(max = 64, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Описание особенностей ягоды")
     private String berry;
 
-    @Size(max = 64)
+    @Size(max = 64, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Описание вкусовых особенностей")
     private String taste;
 
     @Schema(description = "Значение морозостойкости")
-    private Integer resistanceCold;
+    @Pattern(regexp = NUMBER_PATTERN, message = "{vinogradiya.catalogue.base.integer}")
+    @Size(max = 3, message = "{vinogradiya.catalogue.base.max_size}")
+    private String resistanceCold;
 
     @Schema(description = "Цена саженца")
-    private Integer priceSeed;
+    @Pattern(regexp = POSITIVE_FLOAT_PATTERN, message = "{vinogradiya.catalogue.base.positive}")
+    @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
+    private String priceSeed;
 
     @Schema(description = "Цена черенка")
-    private Integer priceCut;
+    @Pattern(regexp = POSITIVE_FLOAT_PATTERN, message = "{vinogradiya.catalogue.base.positive}")
+    @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
+    private String priceCut;
 
-    @Size(max = 128)
     @Schema(description = "Изображение")
+    @Size(max = 128, message = "{vinogradiya.catalogue.base.max_size}")
     private String image;
 
-    @Size(max = 2048)
     @Schema(description = "Описание")
+    @Size(max = 2048, message = "{vinogradiya.catalogue.base.max_size}")
     private String description;
 
-    @Size(max = 32)
     @Schema(description = "Название мини селекции (если есть)")
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     private String selectionMini;
 
     @Schema(description = "Доступно саженцев")
-    private Integer availableSeed;
+    @Pattern(regexp = POSITIVE_NUMBER_PATTERN, message = "{vinogradiya.catalogue.base.positive}")
+    @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
+    private String availableSeed;
 
     @Schema(description = "Доступно черенков")
-    private Integer availableCut;
+    @Pattern(regexp = POSITIVE_NUMBER_PATTERN, message = "{vinogradiya.catalogue.base.positive}")
+    @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
+    private String availableCut;
 
     @Schema(description = "Продано саженцев")
-    private Integer soldSeed;
+    @Pattern(regexp = POSITIVE_NUMBER_PATTERN, message = "{vinogradiya.catalogue.base.positive}")
+    @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
+    private String soldSeed;
 
     @Schema(description = "Продано черенков")
-    private Integer soldCut;
+    @Pattern(regexp = POSITIVE_NUMBER_PATTERN, message = "{vinogradiya.catalogue.base.positive}")
+    @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
+    private String soldCut;
 
     @Pattern(regexp = "^(\\s*|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$")
-    @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "Селекция с идентификатором: {0} не найдена")
+    @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "{vinogradiya.catalogue.selection.not_found}")
     @Schema(description = "Идентификатор селекции")
     private String selectionId;
 
@@ -98,13 +117,18 @@ public abstract class ProductInput {
     }
 
     @Generated
+    public Integer getResistanceCold() {
+        return getNumber(this.resistanceCold);
+    }
+
+    @Generated
     public Integer getPriceSeed() {
-        return nullToZero(this.priceSeed);
+        return getNumber(this.priceSeed);
     }
 
     @Generated
     public Integer getPriceCut() {
-        return nullToZero(this.priceCut);
+        return getNumber(this.priceCut);
     }
 
     @Generated
@@ -124,22 +148,22 @@ public abstract class ProductInput {
 
     @Generated
     public Integer getAvailableSeed() {
-        return nullToZero(this.availableSeed);
+        return getNumber(this.availableSeed);
     }
 
     @Generated
     public Integer getAvailableCut() {
-        return nullToZero(this.availableCut);
+        return getNumber(this.availableCut);
     }
 
     @Generated
     public Integer getSoldSeed() {
-        return nullToZero(this.soldSeed);
+        return getNumber(this.soldSeed);
     }
 
     @Generated
     public Integer getSoldCut() {
-        return this.soldCut;
+        return getNumber(soldCut);
     }
 
     @Generated
@@ -153,10 +177,10 @@ public abstract class ProductInput {
     }
 
     protected String upperFirst(String str) {
-        return Optional.ofNullable(str).map(s -> s.length() > 1 ? s.substring(0, 1).toUpperCase() + s.substring(1) : s).orElse(null);
+        return Optional.ofNullable(str).map(s -> s.length() > 1 ? toTitleCase(s) : s).orElse(null);
     }
 
-    protected Integer nullToZero(Integer num) {
-        return Optional.ofNullable(num).orElse(0);
+    protected Integer getNumber(String str) {
+        return Optional.ofNullable(str).map(s -> Integer.parseInt(blankToNull(s.trim()))).orElse(null);
     }
 }

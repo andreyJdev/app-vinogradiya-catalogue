@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PresentInDbConstraint {
 
-    String message() default "Задано несуществующее значение поля";
+    String message() default "Селекция с идентификатором: {0} не найдена";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     String table();

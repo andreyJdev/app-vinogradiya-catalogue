@@ -24,6 +24,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import static ru.vinogradiya.utils.common.string.MessageUtil.messageSource;
+
 @RestControllerAdvice
 @NoArgsConstructor
 public class GlobalExceptionHandler {
@@ -86,6 +88,6 @@ public class GlobalExceptionHandler {
     }
 
     private String extractMessage(ObjectError error) {
-        return (String) Optional.ofNullable(error.getDefaultMessage()).orElse("Ошибка валидации");
+        return (String) Optional.ofNullable(error.getDefaultMessage()).orElse(messageSource("{vinogradiya.catalogue.exception.validation_error}"));
     }
 }

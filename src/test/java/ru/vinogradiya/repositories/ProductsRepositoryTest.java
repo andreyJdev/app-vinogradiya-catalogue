@@ -289,6 +289,21 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         String name = "Ангуляй Воид Секевич";
         ProductCreateDto dto = new ProductCreateDto();
         dto.setName(name);
+        dto.setTime("Время созревания");
+        dto.setStrength("Сила роста");
+        dto.setCluster("Гроздь");
+        dto.setBerry("Ягода");
+        dto.setTaste("Вкус");
+        dto.setResistanceCold("-32");
+        dto.setPriceSeed("500");
+        dto.setPriceCut("700");
+        dto.setImage("img.png");
+        dto.setDescription("Описание");
+        dto.setSelectionMini("Мини селекция");
+        dto.setAvailableSeed("5");
+        dto.setAvailableCut("5");
+        dto.setSoldSeed("2");
+        dto.setSoldCut("3");
 
         repository.create(dto);
         Product result = repository.findAllByNameIn(Collections.singletonList(name)).get(0);

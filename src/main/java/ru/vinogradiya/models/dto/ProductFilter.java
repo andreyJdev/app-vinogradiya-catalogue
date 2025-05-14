@@ -2,6 +2,7 @@ package ru.vinogradiya.models.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,13 +12,16 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static ru.vinogradiya.utils.common.string.MessageUtil.NUMBER_PATTERN;
+
 public class ProductFilter {
 
     @Schema(description = "Название сорта")
     Set<String> names;
 
     @Schema(description = "Значение морозостойкости")
-    Set<@Pattern(regexp = "^(0|[1-9]\\d*|-[1-9]\\d*)$", message = "Только числовые значения") String> resistances;
+    Set<@Pattern(regexp = NUMBER_PATTERN, message = "{vinogradiya.catalogue.base.integer}")
+    @Size(max = 3, message = "{vinogradiya.catalogue.base.max_size}") String> resistances;
 
     @Schema(description = "Название селекции")
     Set<String> selections;
@@ -32,12 +36,11 @@ public class ProductFilter {
                 .orElse(Collections.emptySet());
     }
 
-    public Set<String> getResistances() {
+    public Set<Integer> getResistances() {
         return Optional.ofNullable(resistances)
-                .map(resistancesList -> resistancesList.stream()
-                        .map(resistance -> Optional.ofNullable(resistance)
-                                .filter(r -> !r.isBlank())
-                                .orElse(null))
+                .map(rList -> rList.stream()
+                        .filter(r -> Objects.nonNull(r) && !r.isBlank())
+                        .map(r -> Integer.parseInt(r.trim()))
                         .collect(Collectors.toSet()))
                 .orElse(Collections.emptySet());
     }

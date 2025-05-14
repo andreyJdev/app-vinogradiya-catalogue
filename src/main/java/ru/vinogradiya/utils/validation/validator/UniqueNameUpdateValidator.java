@@ -6,10 +6,13 @@ import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import ru.vinogradiya.models.dto.ProductUpdateDto;
 import ru.vinogradiya.models.entity.Product;
-import ru.vinogradiya.utils.common.StringFormater;
+import ru.vinogradiya.utils.common.string.StringFormater;
 import ru.vinogradiya.utils.validation.annotation.UniqueNameUpdateConstraint;
 
 import java.util.Objects;
+
+import static ru.vinogradiya.utils.common.string.MessageUtil.messageSource;
+import static ru.vinogradiya.utils.common.string.StringFormater.toTitleCase;
 
 public class UniqueNameUpdateValidator implements ConstraintValidator<UniqueNameUpdateConstraint, ProductUpdateDto> {
 
@@ -23,7 +26,7 @@ public class UniqueNameUpdateValidator implements ConstraintValidator<UniqueName
     public void initialize(UniqueNameUpdateConstraint constraintAnnotation) {
         this.table = constraintAnnotation.table();
         this.column = constraintAnnotation.column();
-        this.message = constraintAnnotation.message();
+        this.message = messageSource(constraintAnnotation.message());
     }
 
     @Override
@@ -33,13 +36,13 @@ public class UniqueNameUpdateValidator implements ConstraintValidator<UniqueName
             return true;
         }
 
-        String query = String.format("SELECT COUNT(*) FROM %s WHERE %s = :value", table, column);
+        String query = String.format("SELECT COUNT(*) FROM %s WHERE LOWER(%s) = LOWER(:value)", table, column);
         Product found = ((Product) manager.createNativeQuery(query)
                 .setParameter("value", value)
                 .getSingleResult());
         if (found != null && !Objects.equals(found.getId(), updateDto.getId())) {
             context.disableDefaultConstraintViolation();
-            context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, value))
+            context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, toTitleCase(value)))
                     .addConstraintViolation();
             return false;
         }

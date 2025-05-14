@@ -14,18 +14,17 @@ import ru.vinogradiya.utils.validation.annotation.UniqueNameUpdateConstraint;
 import java.util.Optional;
 import java.util.UUID;
 
-@UniqueNameUpdateConstraint(table = "product", column = Product_.NAME, message = "Сорт с именем: {0} уже существует")
+@UniqueNameUpdateConstraint(table = "product", column = Product_.NAME)
 public class ProductUpdateDto extends ProductInput {
 
-    //todo заменить на uuid и добавить JsonView
     @JsonIgnore
-    @NotNull
-    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+    @NotNull(message = "vinogradiya.catalogue.base.not_null")
+    @Pattern(regexp = "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$", message = "{vinogradiya.catalogue.base.uuid}")
     @Schema(description = "Идентификатор сорта")
     private final String id;
 
-    @NotNull
-    @Size(min = 2, max = 32)
+    @NotNull(message = "{vinogradiya.catalogue.base.not_null}")
+    @Size(min = 2, max = 32, message = "{vinogradiya.catalogue.base.size}")
     @Schema(description = "Название сорта")
     private String name;
 
