@@ -16,23 +16,20 @@ import java.util.UUID;
 
 import static ru.vinogradiya.utils.common.string.MessageUtil.UUID_PATTERN;
 
+@Schema(description = "Запрос на изменение сорта винограда")
 @UniqueNameUpdateConstraint(table = "product", column = Product_.NAME)
 public class ProductUpdateDto extends ProductInput {
 
     @JsonIgnore
+    @Schema(description = "Идентификатор сорта")
     @NotNull(message = "vinogradiya.catalogue.base.not_null")
     @Pattern(regexp = UUID_PATTERN, message = "{vinogradiya.catalogue.base.uuid}")
-    @Schema(description = "Идентификатор сорта")
-    private final String id;
+    private String id;
 
+    @Schema(description = "Название сорта")
     @NotNull(message = "{vinogradiya.catalogue.base.not_null}")
     @Size(min = 2, max = 32, message = "{vinogradiya.catalogue.base.size}")
-    @Schema(description = "Название сорта")
     private String name;
-
-    public ProductUpdateDto(String id) {
-        this.id = id;
-    }
 
     @Generated
     public UUID getId() {
@@ -43,6 +40,11 @@ public class ProductUpdateDto extends ProductInput {
     @Generated
     public String getName() {
         return upperFirst(this.name);
+    }
+
+    @Generated
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Generated

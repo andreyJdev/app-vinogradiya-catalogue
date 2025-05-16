@@ -65,26 +65,26 @@ public interface ProductsRepository extends JpaRepository<Product, UUID>,
     void create(ProductCreateDto dto);
 
     @Query(value = """
-            UPDATE Product p SET
-            p.name = :#{#dto.name},
-            p.time = :#{#dto.time},
-            p.strength = :#{#dto.strength},
-            p.cluster = :#{#dto.cluster},
-            p.berry = :#{#dto.berry},
-            p.taste = :#{#dto.taste},
-            p.resistanceCold = :#{#dto.resistanceCold},
-            p.priceSeed = :#{#dto.priceSeed},
-            p.priceCut = :#{#dto.priceCut},
-            p.image = :#{#dto.image},
-            p.description = :#{#dto.description},
-            p.selectionMini = :#{#dto.selectionMini},
-            p.availableSeed = :#{#dto.availableSeed},
-            p.availableCut = :#{#dto.availableCut},
-            p.soldSeed = :#{#dto.soldSeed},
-            p.soldCut = :#{#dto.soldCut},
-            p.selection = :#{#dto.selectionId}
-            WHERE p.id = :#{#dto.id}
-            """)
+            UPDATE product SET
+            name = :#{#dto.name},
+            time = :#{#dto.time},
+            strength = :#{#dto.strength},
+            cluster = :#{#dto.cluster},
+            berry = :#{#dto.berry},
+            taste = :#{#dto.taste},
+            resistance_cold = :#{#dto.resistanceCold},
+            price_seed = :#{#dto.priceSeed},
+            price_cut = :#{#dto.priceCut},
+            image = :#{#dto.image},
+            description = :#{#dto.description},
+            selection_mini = :#{#dto.selectionMini},
+            available_seed = :#{#dto.availableSeed},
+            available_cut = :#{#dto.availableCut},
+            sold_seed = :#{#dto.soldSeed},
+            sold_cut = :#{#dto.soldCut},
+            selection_id = :#{#dto.selectionId}
+            WHERE id = :#{#dto.id}
+            """, nativeQuery = true)
     @Modifying
     void update(ProductUpdateDto dto);
 }

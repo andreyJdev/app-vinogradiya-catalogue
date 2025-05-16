@@ -63,8 +63,8 @@ public class ProductFilter {
         return this;
     }
 
-    public ProductFilter resistances(List<String> names) {
-        setResistances(names);
+    public ProductFilter resistances(List<String> resistances) {
+        setResistances(resistances);
         return this;
     }
 

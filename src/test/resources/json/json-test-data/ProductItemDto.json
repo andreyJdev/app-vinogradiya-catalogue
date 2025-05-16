@@ -1,0 +1,39 @@
+{
+  "ProductItemDto": [
+    {
+      "name": "Велюр",
+      "time": "Оч. ранний",
+      "strength": "Сильно-рослый",
+      "cluster": "Крупная 800-1200г.",
+      "berry": "18-25г. крсная",
+      "taste": "Мясистая хрустящая, с лёгким мускатным ароматом оч. вкусная",
+      "resistanceCold": -23,
+      "priceSeed": 500,
+      "priceCut": 250,
+      "image": null,
+      "description": null,
+      "selectionMini": null,
+      "selection": {
+        "name": "Гибридные формы селекции Криули С.И."
+      }
+    },
+    {
+      "name": "Кузьмич",
+      "time": "Оч. ранний",
+      "strength": "Сильно-рослый",
+      "cluster": "Крупная 500-1200г.",
+      "berry": "36х28 мм 15-20г. розовая",
+      "taste": "Мясистая, плотная,хрустящая гармонич. вкуса, оч. вкусная",
+      "resistanceCold": -23,
+      "priceSeed": 500,
+      "priceCut": 300,
+      "image": "basanti.webp",
+      "description": null,
+      "selectionMini": null,
+      "selection": {
+        "name": "Ангуляй Воид Секевич"
+      }
+    }
+  ],
+  "IncorrectJson": "Invalid JSON"
+}

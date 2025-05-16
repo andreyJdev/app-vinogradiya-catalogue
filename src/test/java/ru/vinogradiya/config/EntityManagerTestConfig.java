@@ -1,26 +1,24 @@
 package ru.vinogradiya.config;
 
-import jakarta.persistence.EntityManager;
+import io.zonky.test.db.AutoConfigureEmbeddedDatabase;
 import jakarta.persistence.EntityManagerFactory;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.jpa.repository.support.JpaRepositoryFactoryBean;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-import ru.vinogradiya.models.entity.Product;
-import ru.vinogradiya.models.entity.Selection;
-import ru.vinogradiya.repositories.ProductsRepository;
-import ru.vinogradiya.repositories.SelectionsRepository;
 
 import javax.sql.DataSource;
-import java.util.UUID;
 
 @Configuration
 @EnableTransactionManagement
-public class JpaRepositoryTestConfig {
+@EnableJpaRepositories(basePackages = {"ru.vinogradiya.repositories"})
+@AutoConfigureEmbeddedDatabase(provider = AutoConfigureEmbeddedDatabase.DatabaseProvider.ZONKY)
+public class EntityManagerTestConfig {
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource dataSource) {
@@ -32,22 +30,15 @@ public class JpaRepositoryTestConfig {
     }
 
     @Bean
-    public EntityManager entityManager(EntityManagerFactory entityManagerFactory) {
-        return entityManagerFactory.createEntityManager();
-    }
-
-    @Bean
     public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
         return new JpaTransactionManager(entityManagerFactory);
     }
 
     @Bean
-    public JpaRepositoryFactoryBean<ProductsRepository, Product, UUID> productsRepository() {
-        return new JpaRepositoryFactoryBean<>(ProductsRepository.class);
-    }
-
-    @Bean
-    public JpaRepositoryFactoryBean<SelectionsRepository, Selection, UUID> selectionsRepository() {
-        return new JpaRepositoryFactoryBean<>(SelectionsRepository.class);
+    public TestEntityManager testEntityManager(EntityManagerFactory entityManagerFactory) {
+        if (entityManagerFactory != null) {
+            return new TestEntityManager(entityManagerFactory);
+        }
+        return null;
     }
 }

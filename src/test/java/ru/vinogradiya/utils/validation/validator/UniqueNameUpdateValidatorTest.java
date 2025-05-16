@@ -32,6 +32,8 @@ class UniqueNameUpdateValidatorTest {
     @Mock
     private ConstraintValidatorContext.ConstraintViolationBuilder violationBuilder;
     @Mock
+    private ConstraintValidatorContext.ConstraintViolationBuilder.NodeBuilderCustomizableContext customizableContext;
+    @Mock
     private UniqueNameUpdateConstraint annotation;
 
     @BeforeEach
@@ -47,7 +49,8 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfValueIsNull() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
+        ProductUpdateDto updateDto = new ProductUpdateDto();
+        updateDto.setId(UUID.randomUUID().toString());
 
         // when
         boolean isValid = validator.isValid(updateDto, context);
@@ -62,7 +65,8 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfValueIsBlank(String value) {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
+        ProductUpdateDto updateDto = new ProductUpdateDto();
+        updateDto.setId(UUID.randomUUID().toString());
         updateDto.setName(value);
 
         // when
@@ -77,11 +81,12 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnTrueIfEntityManagerDontReturnProduct() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
+        ProductUpdateDto updateDto = new ProductUpdateDto();
+        updateDto.setId(UUID.randomUUID().toString());
         updateDto.setName("name");
         Query query = Mockito.mock(Query.class);
 
-        Mockito.when(manager.createNativeQuery(Mockito.anyString())).thenReturn(query);
+        Mockito.when(manager.createNativeQuery(Mockito.anyString(), Mockito.eq(Product.class))).thenReturn(query);
         Mockito.when(query.setParameter("value", updateDto.getName())).thenReturn(query);
         Mockito.when(query.getSingleResult()).thenReturn(null);
 
@@ -98,14 +103,15 @@ class UniqueNameUpdateValidatorTest {
 
         // given
         UUID id = UUID.randomUUID();
-        ProductUpdateDto updateDto = new ProductUpdateDto(id.toString());
+        ProductUpdateDto updateDto = new ProductUpdateDto();
+        updateDto.setId(id.toString());
         updateDto.setName("Name");
         Product found = new Product();
         found.setId(id);
         found.setName("Name");
 
         Query query = Mockito.mock(Query.class);
-        Mockito.when(manager.createNativeQuery(Mockito.anyString())).thenReturn(query);
+        Mockito.when(manager.createNativeQuery(Mockito.anyString(), Mockito.eq(Product.class))).thenReturn(query);
         Mockito.when(query.setParameter("value", updateDto.getName())).thenReturn(query);
         Mockito.when(query.getSingleResult()).thenReturn(found);
 
@@ -121,17 +127,19 @@ class UniqueNameUpdateValidatorTest {
     void testIsValid_shouldReturnFalseIfEntityManagerDoReturnOtherProductWithEqualName() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
+        ProductUpdateDto updateDto = new ProductUpdateDto();
+        updateDto.setId(UUID.randomUUID().toString());
         updateDto.setName("Name");
         Product found = new Product();
         found.setId(UUID.randomUUID());
         found.setName("Name");
 
         Query query = Mockito.mock(Query.class);
-        Mockito.when(manager.createNativeQuery(Mockito.anyString())).thenReturn(query);
+        Mockito.when(manager.createNativeQuery(Mockito.anyString(), Mockito.eq(Product.class))).thenReturn(query);
         Mockito.when(query.setParameter("value", updateDto.getName())).thenReturn(query);
         Mockito.when(query.getSingleResult()).thenReturn(found);
         Mockito.when(context.buildConstraintViolationWithTemplate(Mockito.anyString())).thenReturn(this.violationBuilder);
+        Mockito.when(this.violationBuilder.addPropertyNode(Mockito.anyString())).thenReturn(this.customizableContext);
 
         // when
         boolean isValid = validator.isValid(updateDto, context);

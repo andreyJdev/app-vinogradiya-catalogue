@@ -1,6 +1,7 @@
 package ru.vinogradiya.utils.validation.validator;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -36,13 +37,21 @@ public class UniqueNameUpdateValidator implements ConstraintValidator<UniqueName
             return true;
         }
 
-        String query = String.format("SELECT COUNT(*) FROM %s WHERE LOWER(%s) = LOWER(:value)", table, column);
-        Product found = ((Product) manager.createNativeQuery(query)
-                .setParameter("value", value)
-                .getSingleResult());
+        String query = String.format("SELECT * FROM %s WHERE LOWER(%s) = LOWER(:value)", table, column);
+        Product found;
+
+        try {
+            found = ((Product) manager.createNativeQuery(query, Product.class)
+                    .setParameter("value", value)
+                    .getSingleResult());
+        } catch (NoResultException e) {
+            found = null;
+        }
+
         if (found != null && !Objects.equals(found.getId(), updateDto.getId())) {
             context.disableDefaultConstraintViolation();
             context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, toTitleCase(value)))
+                    .addPropertyNode(column)
                     .addConstraintViolation();
             return false;
         }

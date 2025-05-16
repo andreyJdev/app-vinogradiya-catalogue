@@ -48,9 +48,9 @@ public class ProductsController {
             @RequestBody @Validated ProductFilterRequest request,
             @PageableDefault(size = 8)
             @SortDefault.SortDefaults({
+                    @SortDefault(value = "name", direction = Sort.Direction.ASC),
                     @SortDefault(value = "priceSeed", direction = Sort.Direction.ASC),
-                    @SortDefault(value = "priceCut", direction = Sort.Direction.ASC),
-                    @SortDefault(value = "name", direction = Sort.Direction.ASC)
+                    @SortDefault(value = "priceCut", direction = Sort.Direction.ASC)
             })
             @ParameterObject Pageable pageable
     ) {

@@ -200,7 +200,8 @@ class ProductsServiceImplTest {
     void testUpdate_shouldReturnProductItem() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto(UUID.randomUUID().toString());
+        ProductUpdateDto updateDto = new ProductUpdateDto();
+        updateDto.setId(UUID.randomUUID().toString());
         updateDto.setName("Алиса");
         Product product = new Product();
         product.setName(updateDto.getName());

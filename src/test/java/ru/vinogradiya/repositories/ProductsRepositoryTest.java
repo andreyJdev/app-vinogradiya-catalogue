@@ -314,10 +314,13 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
         // given
         String productId = "04f5e733-8680-40a8-b304-33e14d38ad2d";
+        String selectionId = "45283f75-af8b-4e71-b5ae-38ab6c613f1a";
         String name = "Ангуляй Воид Секевич";
 
-        ProductUpdateDto dto = new ProductUpdateDto(productId);
+        ProductUpdateDto dto = new ProductUpdateDto();
+        dto.setId(productId);
         dto.setName(name);
+        dto.setSelectionId(selectionId);
         dto.setTime("Изменено");
 
         var query = entityManager.getEntityManager().createQuery(
