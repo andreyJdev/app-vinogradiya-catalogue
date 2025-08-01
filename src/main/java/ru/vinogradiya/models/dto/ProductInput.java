@@ -19,24 +19,24 @@ import static ru.vinogradiya.utils.common.string.StringFormater.toTitleCase;
 @Data
 public abstract class ProductInput {
 
-    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Время созревания")
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     private String time;
 
-    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Сила роста")
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     private String strength;
 
-    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Описание особенностей грозди")
+    @Size(max = 32, message = "{vinogradiya.catalogue.base.max_size}")
     private String cluster;
 
-    @Size(max = 64, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Описание особенностей ягоды")
+    @Size(max = 64, message = "{vinogradiya.catalogue.base.max_size}")
     private String berry;
 
-    @Size(max = 64, message = "{vinogradiya.catalogue.base.max_size}")
     @Schema(description = "Описание вкусовых особенностей")
+    @Size(max = 64, message = "{vinogradiya.catalogue.base.max_size}")
     private String taste;
 
     @Schema(description = "Значение морозостойкости")
@@ -86,9 +86,9 @@ public abstract class ProductInput {
     @Size(max = 8, message = "{vinogradiya.catalogue.base.max_size}")
     private String soldCut;
 
+    @Schema(description = "Идентификатор селекции")
     @Pattern(regexp = "^(\\s*|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$")
     @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "{vinogradiya.catalogue.selection.not_found}")
-    @Schema(description = "Идентификатор селекции")
     private String selectionId;
 
     @Generated

@@ -19,6 +19,7 @@ public @interface UniqueNameConstraint {
     String message() default "Сорт с именем: {0} уже существует";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+    String id() default "id";
     String table();
-    String column();
+    String column() default "name";
 }
