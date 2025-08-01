@@ -87,8 +87,8 @@ public abstract class ProductInput {
     private String soldCut;
 
     @Schema(description = "Идентификатор селекции")
-    @Pattern(regexp = "^(\\s*|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$")
     @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "{vinogradiya.catalogue.selection.not_found}")
+    @Pattern(regexp = "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$|\\s*")
     private String selectionId;
 
     @Generated

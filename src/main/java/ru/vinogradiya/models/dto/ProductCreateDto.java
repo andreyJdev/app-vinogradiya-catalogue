@@ -2,6 +2,7 @@ package ru.vinogradiya.models.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Generated;
@@ -23,6 +24,7 @@ public class ProductCreateDto extends ProductInput {
     @Schema(description = "Название сорта")
     @UniqueNameConstraint(table = Product.TABLE_NAME)
     @NotNull(message = "{vinogradiya.catalogue.base.not_null}")
+    @NotBlank(message = "{vinogradiya.catalogue.base.not_empty}")
     @Size(min = 2, max = 32, message = "{vinogradiya.catalogue.base.size}")
     private String name;
 
