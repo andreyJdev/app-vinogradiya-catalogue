@@ -20,10 +20,10 @@ public class ProductCreateDto extends ProductInput {
     @Schema(description = "Идентификатор сорта")
     private String id;
 
-    @UniqueNameConstraint(table = Product.TABLE_NAME, column = Product.NAME)
+    @Schema(description = "Название сорта")
+    @UniqueNameConstraint(table = Product.TABLE_NAME)
     @NotNull(message = "{vinogradiya.catalogue.base.not_null}")
     @Size(min = 2, max = 32, message = "{vinogradiya.catalogue.base.size}")
-    @Schema(description = "Название сорта")
     private String name;
 
     public ProductCreateDto() {
