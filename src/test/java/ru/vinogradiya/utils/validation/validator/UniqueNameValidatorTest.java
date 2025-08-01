@@ -35,8 +35,6 @@ class UniqueNameValidatorTest {
     private ConstraintValidatorContext.ConstraintViolationBuilder violationBuilder;
     @Mock
     private UniqueNameConstraint annotation;
-    @Mock
-    private CurrentEntityIdHolder currentEntityIdHolder;
 
     @BeforeEach
     public void setUp() {
