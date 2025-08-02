@@ -38,7 +38,8 @@ public class UniqueNameValidator implements ConstraintValidator<UniqueNameConstr
             return true;
         }
 
-        String query = String.format("SELECT %s FROM %s WHERE LOWER(%s) = LOWER(:value)", id, table, column);
+        String query = String.format(
+                "SELECT %s FROM %s WHERE LOWER(%s) = LOWER(:value)", id, table, column);
         Object result;
         try {
             result = manager.createNativeQuery(query)
