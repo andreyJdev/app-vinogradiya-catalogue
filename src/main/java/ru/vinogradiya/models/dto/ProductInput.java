@@ -14,7 +14,9 @@ import java.util.UUID;
 import static ru.vinogradiya.utils.common.string.MessageUtil.NUMBER_PATTERN;
 import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_FLOAT_PATTERN;
 import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_NUMBER_PATTERN;
-import static ru.vinogradiya.utils.common.string.StringFormater.toTitleCase;
+import static ru.vinogradiya.utils.dto.InputDtoMethods.blankToNull;
+import static ru.vinogradiya.utils.dto.InputDtoMethods.getNumber;
+import static ru.vinogradiya.utils.dto.InputDtoMethods.upperFirst;
 
 @Data
 public abstract class ProductInput {
@@ -143,7 +145,7 @@ public abstract class ProductInput {
 
     @Generated
     public String getSelectionMini() {
-        return upperFirst(blankToNull(this.description));
+        return upperFirst(blankToNull(this.selectionMini));
     }
 
     @Generated
@@ -163,24 +165,12 @@ public abstract class ProductInput {
 
     @Generated
     public Integer getSoldCut() {
-        return getNumber(soldCut);
+        return getNumber(this.soldCut);
     }
 
     @Generated
     public UUID getSelectionId() {
         return Optional.ofNullable(blankToNull(this.selectionId))
                 .map(UUID::fromString).orElse(null);
-    }
-
-    protected String blankToNull(String str) {
-        return Optional.ofNullable(str).filter(s -> !s.isBlank()).orElse(null);
-    }
-
-    protected String upperFirst(String str) {
-        return Optional.ofNullable(str).map(s -> s.length() > 1 ? toTitleCase(s) : s).orElse(null);
-    }
-
-    protected Integer getNumber(String str) {
-        return Optional.ofNullable(str).map(s -> Integer.parseInt(blankToNull(s.trim()))).orElse(null);
     }
 }

@@ -38,13 +38,13 @@ class StringFormaterTest {
 
     @Test
     @DisplayName("Должен возвращать строку, где первая буква заглавная")
-    void testToTitleCase_shouldReturnInputWithTitleCase() {
+    void testUpperFirstChar() {
 
         // given
         String input = "string";
 
         // when
-        String result = StringFormater.toTitleCase(input);
+        String result = StringFormater.upperFirstChar(input);
 
         // then
         Assertions.assertEquals("String", result);
@@ -58,7 +58,7 @@ class StringFormaterTest {
         String input = null;
 
         // when
-        String result = StringFormater.toTitleCase(input);
+        String result = StringFormater.upperFirstChar(input);
 
         // then
         Assertions.assertEquals(input, result);
@@ -72,7 +72,7 @@ class StringFormaterTest {
         String input = "   ";
 
         // when
-        String result = StringFormater.toTitleCase(input);
+        String result = StringFormater.upperFirstChar(input);
 
         // then
         Assertions.assertEquals(input, result);

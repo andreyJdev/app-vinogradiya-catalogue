@@ -11,7 +11,6 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.IntegrationMvcTest;
-import ru.vinogradiya.utils.mapping.ProductsMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         scripts = "classpath:db/sql-test-data/product.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS
 )
-@Import({ProductsServiceImpl.class, ProductsMapper.class})
+@Import({ProductsServiceImpl.class})
 class AdminProductsControllerIntegrationTest extends IntegrationMvcTest {
 
     private static final String REST_URL = "/v1/admin/products";

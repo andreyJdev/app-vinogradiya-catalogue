@@ -14,6 +14,9 @@ import ru.vinogradiya.utils.validation.annotation.UniqueNameConstraint;
 import java.util.Optional;
 import java.util.UUID;
 
+import static ru.vinogradiya.utils.dto.InputDtoMethods.blankToNull;
+import static ru.vinogradiya.utils.dto.InputDtoMethods.upperFirst;
+
 @Schema(description = "Запрос на изменение сорта винограда")
 public class ProductUpdateDto extends ProductInput {
 
@@ -31,7 +34,8 @@ public class ProductUpdateDto extends ProductInput {
 
     @Generated
     public UUID getId() {
-        return Optional.ofNullable(blankToNull(this.id)).map(UUID::fromString)
+        return Optional.ofNullable(blankToNull(this.id))
+                .map(UUID::fromString)
                 .orElseThrow(() -> new ApiException(GlobalErrorMessage.INTERNAL_ERROR));
     }
 

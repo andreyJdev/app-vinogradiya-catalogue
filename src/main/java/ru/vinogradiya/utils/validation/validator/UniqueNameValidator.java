@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static ru.vinogradiya.utils.common.string.MessageUtil.messageSource;
-import static ru.vinogradiya.utils.common.string.StringFormater.toTitleCase;
+import static ru.vinogradiya.utils.common.string.StringFormater.upperFirstChar;
 
 public class UniqueNameValidator implements ConstraintValidator<UniqueNameConstraint, String> {
 
@@ -57,7 +57,7 @@ public class UniqueNameValidator implements ConstraintValidator<UniqueNameConstr
         }
 
         context.disableDefaultConstraintViolation();
-        context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, toTitleCase(value)))
+        context.buildConstraintViolationWithTemplate(StringFormater.stringFormat(message, upperFirstChar(value)))
                 .addConstraintViolation();
         return false;
     }

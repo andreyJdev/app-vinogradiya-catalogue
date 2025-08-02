@@ -4,15 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import ru.vinogradiya.models.dto.ProductFilter;
 import ru.vinogradiya.models.dto.ProductFilterRequest;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
-import ru.vinogradiya.service.ProductsServiceImpl;
 import ru.vinogradiya.utils.IntegrationMvcTest;
-import ru.vinogradiya.utils.mapping.ProductsMapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,10 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Sql(
         scripts = "classpath:db/sql-test-data/product.sql",
         executionPhase = Sql.ExecutionPhase.BEFORE_TEST_CLASS
-)
-@ContextConfiguration(classes = {
-        ProductsServiceImpl.class,
-        ProductsMapper.class}
 )
 public class ProductsControllerIntegrationTest extends IntegrationMvcTest {
 

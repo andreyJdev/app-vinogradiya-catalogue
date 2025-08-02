@@ -11,6 +11,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -44,4 +45,15 @@ public class Selection {
 
     @OneToMany(mappedBy = "selection")
     private List<Product> products;
+
+    @Generated
+    public String toString() {
+        return "Selection{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", products=" + products.stream()
+                .map(product -> "{id=" + product.getId() + ", name=" + product.getName() + "}")
+                .toList() +
+                '}';
+    }
 }

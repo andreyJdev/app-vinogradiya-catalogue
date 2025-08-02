@@ -12,8 +12,10 @@ import jakarta.persistence.NamedSubgraph;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Generated;
 import lombok.NoArgsConstructor;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -112,4 +114,30 @@ public class Product {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = SELECTION_ID, referencedColumnName = Selection.ID)
     Selection selection;
+
+    @Generated
+    public String toString() {
+        return "Product{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", time='" + time + '\'' +
+                ", strength='" + strength + '\'' +
+                ", cluster='" + cluster + '\'' +
+                ", berry='" + berry + '\'' +
+                ", taste='" + taste + '\'' +
+                ", resistanceCold=" + resistanceCold +
+                ", priceSeed=" + priceSeed +
+                ", priceCut=" + priceCut +
+                ", image='" + image + '\'' +
+                ", description='" + description + '\'' +
+                ", selectionMini='" + selectionMini + '\'' +
+                ", availableSeed=" + availableSeed +
+                ", availableCut=" + availableCut +
+                ", soldSeed=" + soldSeed +
+                ", soldCut=" + soldCut +
+                Optional.ofNullable(selection)
+                        .map(value -> ", selection=" + "{id=" + value.getId() + ", name=" + value.getName() + "}")
+                        .orElse("") +
+                '}';
+    }
 }

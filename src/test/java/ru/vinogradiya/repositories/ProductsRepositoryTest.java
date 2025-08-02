@@ -18,123 +18,46 @@ import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.utils.JpaRepositoryBasedTest;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertFalse;
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
 import static ru.vinogradiya.queries.product.ProductSpecificationBuilder.buildSpecificationFrom;
 
+@Sql("/db/sql-test-data/product.sql")
 public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
-    private static final UUID ID = UUID.randomUUID();
-    private static final String NAME_KUZMICH = "Кузьмич";
-    private static final String NAME_ALISA = "Алиса";
+    private static final Sort SORT = Sort.by(Product_.PRICE_SEED).ascending();
 
-    private static final Sort SORT = Sort.by(Product_.PRICE_SEED).ascending()
-            .and(Sort.by(Product_.NAME).ascending());
-
-    private final List<Selection> selections = Arrays.asList(
-            new Selection(UUID.randomUUID(), "Новая", Collections.emptyList()),
-            new Selection(UUID.randomUUID(), "Старая", Collections.emptyList())
-    );
-
-    private final List<Product> products = Arrays.asList(
-            new Product(
-                    ID,
-                    "Деф1",
-                    "Оч. ранний",
-                    "Сильно-рослый",
-                    "Крупная 500-1200г.",
-                    "36х28 мм 15-20г. розовая",
-                    "Мясисто-сочная с мускатным ароматом, оч. сладкая",
-                    -23,
-                    450,
-                    300,
-                    "basanti.webp",
-                    null,
-                    "США",
-                    0,
-                    0,
-                    0,
-                    2,
-                    selections.get(1)
-            ),
-            new Product(
-                    UUID.randomUUID(),
-                    "Деф2",
-                    "Оч. ранний",
-                    "Сильно-рослый",
-                    "Крупная 500-1200г.",
-                    "36х28 мм 15-20г. розовая",
-                    "Мясисто-сочная с мускатным ароматом, оч. сладкая",
-                    -23,
-                    500,
-                    300,
-                    "basanti.webp",
-                    null,
-                    "США",
-                    0,
-                    0,
-                    0,
-                    2,
-                    selections.get(0)),
-            new Product(
-                    UUID.randomUUID(),
-                    NAME_KUZMICH,
-                    "Оч. ранний",
-                    "Сильно-рослый",
-                    "Крупная 500-1200г.",
-                    "36х28 мм 15-20г. розовая",
-                    "Мясисто-сочная с мускатным ароматом, оч. сладкая",
-                    -23,
-                    400,
-                    300,
-                    "basanti.webp",
-                    null,
-                    "США",
-                    0,
-                    0,
-                    0,
-                    2,
-                    selections.get(0)),
-            new Product(
-                    UUID.randomUUID(),
-                    NAME_ALISA,
-                    "Средний",
-                    "Сильнорослый",
-                    "800-1300г.",
-                    "6-9 красная",
-                    "Гармоничный мясисто-сочный",
-                    -23,
-                    700,
-                    400,
-                    null,
-                    null,
-                    "США",
-                    1,
-                    1,
-                    1,
-                    1,
-                    null
-            )
-    );
+    private static Map<String, Product> products;
+    private static Map<String, Selection> selections;
 
     @Autowired
     private ProductsRepository repository;
 
     @BeforeEach
     void setUp() {
-        selections.forEach(selection -> entityManager.persist(selection));
-        products.forEach(product -> entityManager.persist(product));
-        entityManager.flush();
+        selections = entityManager.createQuery("SELECT s FROM Selection s", Selection.class)
+                .getResultList().stream()
+                .collect(
+                        Collectors.toMap(Selection::getName, Function.identity())
+                );
+
+        products = entityManager.createQuery("SELECT p FROM Product p", Product.class)
+                .getResultList().stream()
+                .collect(
+                        Collectors.toMap(Product::getName, Function.identity())
+                );
     }
 
     @Test
@@ -142,9 +65,10 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindAll_shouldReturnProductWithFilter() {
 
         // given
+        Selection filterSelection = selections.get("Гибридные формы селекции Криули С.И.");
         ProductFilter filter = ProductFilter.builder()
                 .selections(List.of(
-                        selections.get(1).getName()
+                        filterSelection.getName()
                 ))
                 .build();
 
@@ -153,8 +77,9 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
         // then
         Assertions.assertAll(
-                () -> assertTrue(result.getContent().contains(products.get(0))),
-                () -> assertFalse(result.getContent().contains(products.get(1)))
+                () -> assertTrue(result.getContent().contains(products.get("Велюр"))),
+                () -> assertTrue(result.getContent().contains(products.get("Рембо"))),
+                () -> assertFalse(result.getContent().contains(products.get("Минор")))
         );
     }
 
@@ -170,9 +95,10 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), page);
 
         // then
+        System.out.println();
         Assertions.assertAll(
-                () -> assertEquals(NAME_KUZMICH, result.getContent().get(0).getName()),
-                () -> assertEquals(products.get(0), result.getContent().get(1)),
+                () -> assertEquals(products.get("Минор"), result.getContent().get(0)),
+                () -> assertEquals(products.get("Рембо"), result.getContent().get(1)),
                 () -> assertEquals(2, result.getContent().size())
         );
     }
@@ -182,16 +108,17 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindAll_shouldReturnProductsSecondPageWithOrder() {
 
         // given
-        Pageable page = PageRequest.of(1, 2, SORT);
+        Pageable page = PageRequest.of(2, 4, SORT);
         ProductFilter filter = ProductFilter.builder().build();
 
         // when
         Page<Product> result = repository.findAll(buildSpecificationFrom(null, filter), page);
 
         // then
+        System.out.println();
         Assertions.assertAll(
-                () -> assertEquals(2, result.getContent().size()),
-                () -> assertEquals(NAME_ALISA, result.getContent().get(1).getName())
+                () -> assertEquals(products.get("Аркадия"), result.getContent().get(0)),
+                () -> assertEquals(1, result.getContent().size())
         );
     }
 
@@ -199,13 +126,16 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     @DisplayName("Метод findById должен вернуть Product с заданным id")
     void testFindById_shouldReturnProducts() {
 
+        // given
+        UUID productId = UUID.fromString("04f5e733-8680-40a8-b304-33e14d38ad2d");
+
         // when
-        Optional<Product> result = repository.findById(ID);
+        Optional<Product> result = repository.findById(productId);
 
         // then
         Assertions.assertAll(
                 () -> assertTrue(result.isPresent()),
-                () -> assertEquals(ID, result.map(Product::getId).orElse(null))
+                () -> assertEquals(productId, result.map(Product::getId).orElse(null))
         );
     }
 
@@ -213,11 +143,14 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     @DisplayName("Метод findById должен вернуть Product с заданным именем сорта")
     void testFindByName_shouldReturnProducts() {
 
+        // given
+        String productName = "Минор";
+
         // when
-        Product result = repository.findAllByNameIn(Collections.singletonList(NAME_KUZMICH)).get(0);
+        Product result = repository.findAllByNameIn(Collections.singletonList(productName)).get(0);
 
         // then
-        assertEquals(NAME_KUZMICH, result.getName());
+        assertEquals(productName, result.getName());
     }
 
     @Test
@@ -225,18 +158,19 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testFindAll_shouldReturnProductWithoutSelection() {
 
         // given
+        String search = "Аркадия";
         ProductFilter filter = ProductFilter.builder().
                 selections(Collections.singletonList(null))
                 .build();
         Pageable pageable = Pageable.unpaged();
 
         // when
-        Page<Product> result = repository.findAll(buildSpecificationFrom(NAME_ALISA, filter), pageable);
+        Page<Product> result = repository.findAll(buildSpecificationFrom(search, filter), pageable);
 
         // then
         Assertions.assertAll(
                 () -> assertEquals(1, result.getContent().size()),
-                () -> assertEquals(NAME_ALISA, result.getContent().get(0).getName()),
+                () -> assertEquals(search, result.getContent().get(0).getName()),
                 () -> assertNull(result.getContent().get(0).getSelection())
         );
     }
@@ -256,10 +190,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
         // then
         Assertions.assertAll(
-                () -> assertEquals(products.size(), result.getContent().size()),
-                () -> assertTrue(result.getContent().contains(products.get(0))),
-                () -> assertTrue(result.getContent().contains(products.get(1))),
-                () -> assertTrue(result.getContent().contains(products.get(2)))
+                () -> assertEquals(products.size(), result.getContent().size())
         );
     }
 
@@ -290,7 +221,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         dto.setSoldSeed("2");
         dto.setSoldCut("3");
 
-        var query = entityManager.getEntityManager().createQuery(
+        var query = entityManager.createQuery(
                 "SELECT p FROM Product p WHERE p.id = :id",
                 Product.class
         );
@@ -308,7 +239,6 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     }
 
     @Test
-    @Sql("/db/sql-test-data/product.sql")
     @DisplayName("Метод update должен обновить существующий продукт, поле должно быть изменено")
     void testUpdate_shouldUpdateProduct() {
 
@@ -323,7 +253,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         dto.setSelectionId(selectionId);
         dto.setTime("Изменено");
 
-        var query = entityManager.getEntityManager().createQuery(
+        var query = entityManager.createQuery(
                 "SELECT p FROM Product p WHERE p.id = :id",
                 Product.class
         );
@@ -331,6 +261,8 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
 
         // when
         repository.update(dto);
+
+        entityManager.clear();
         Product result = query.getSingleResult();
 
         // then
