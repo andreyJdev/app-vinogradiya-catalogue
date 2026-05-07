@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - include:
+      file: 20260507-00-0_create-selection-table.sql
+      relativeToChangelogFile: true
+  - include:
+      file: 20260507-00-1_create-product-table.sql
+      relativeToChangelogFile: true

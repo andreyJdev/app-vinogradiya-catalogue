@@ -1,15 +1,8 @@
-CREATE SCHEMA IF NOT EXISTS main;
-SET search_path TO main;
---
+--liquibase formatted sql
+--changeset andrey.jdev@gmail.com:20260507-00-1
+--commit Создание таблицы product
 
-CREATE TABLE IF NOT EXISTS selection
-(
-    "id"   uuid         NOT NULL,
-    "name" varchar(100) NOT NULL,
-    CONSTRAINT selection_pk PRIMARY KEY (id)
-);
-
-CREATE TABLE IF NOT EXISTS product
+CREATE TABLE IF NOT EXISTS main.product
 (
     "id"              uuid        NOT NULL,
     "name"            varchar(32) NOT NULL,
@@ -33,7 +26,7 @@ CREATE TABLE IF NOT EXISTS product
     CONSTRAINT product_name UNIQUE (name)
 );
 
-ALTER TABLE product
+ALTER TABLE main.product
     ADD CONSTRAINT product_selection_fk
         FOREIGN KEY (selection_id)
             REFERENCES selection (id)

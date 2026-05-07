@@ -22,6 +22,8 @@ services:
       context: .
       dockerfile: ./docker/liquibase/Dockerfile
     container_name: liquibase_vinogradiya_catalogue
+    volumes:
+      - ./dbscripts/liquibase:/dbscripts/liquibase:ro
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/vincatalog
       SPRING_DATASOURCE_USERNAME: uvcat

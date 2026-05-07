@@ -1,0 +1,11 @@
+spring:
+  liquibase:
+    enabled: true
+    default-schema: main
+    liquibase-schema: main
+    change-log: classpath:/vincatalog/changelog.yml
+    database-change-log-table: DEVOPS_DATABASE_CHANGE_LOG
+    database-change-log-lock-table: DEVOPS_DATABASE_CHANGE_LOG_LOCK
+  sql:
+    init:
+      mode: never
