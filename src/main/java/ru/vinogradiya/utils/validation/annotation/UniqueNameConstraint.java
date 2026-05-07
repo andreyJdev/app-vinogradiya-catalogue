@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UniqueNameConstraint {
 
-    String message() default "Сорт с именем: {0} уже существует";
+    String message() default "Название: {0} уже существует";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
     String id() default "id";

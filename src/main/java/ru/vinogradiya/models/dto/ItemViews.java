@@ -1,6 +1,6 @@
 package ru.vinogradiya.models.dto;
 
-public class ProductItemViews {
+public abstract class ItemViews {
 
     public static class UserAccess {}
     public static class AdminAccess extends UserAccess {};

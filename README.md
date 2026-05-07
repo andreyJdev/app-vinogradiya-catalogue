@@ -37,6 +37,10 @@ SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/vincatalog SPRING_DATASOU
 `docker-compose --profile liquibase up`.
 
 Запуск приложения командой
-`java -jar target/'имя_исполняемого_файла'.jar`
+`java -jar target/'имя_исполняемого_файла'.jar`.
 
 Взаимодействие через Swagger: http://localhost:8080/swagger-ui/index.html.
+
+## Тесты
+
+Для успешного прохождения тестов для Maven Runner добавить VM Options `-Dfile.encoding=UTF-8`.

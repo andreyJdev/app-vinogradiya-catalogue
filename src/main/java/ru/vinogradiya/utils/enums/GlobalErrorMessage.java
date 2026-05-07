@@ -12,7 +12,7 @@ import static ru.vinogradiya.utils.common.string.MessageUtil.messageSource;
 public enum GlobalErrorMessage implements ErrorMessage {
 
     INVALID_JSON("{vinogradiya.catalogue.global.invalid_json}", HttpStatus.BAD_REQUEST, Type.VALIDATION_TYPE),
-    INTERNAL_ERROR("{vinogradiya.catalogue.global.internal_server_error}", HttpStatus.INTERNAL_SERVER_ERROR, Type.VALIDATION_TYPE);
+    INTERNAL_ERROR("{vinogradiya.catalogue.global.internal_server_error}", HttpStatus.INTERNAL_SERVER_ERROR, Type.APPLICATION_TYPE);
 
     private final String message;
     private final HttpStatus status;

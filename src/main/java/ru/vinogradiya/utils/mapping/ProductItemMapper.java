@@ -7,7 +7,7 @@ import ru.vinogradiya.models.entity.Product;
 import java.util.Objects;
 
 @Component
-public class ProductsMapper implements CatalogueMapper<ProductItemDto> {
+public class ProductItemMapper implements ItemMapper<Product, ProductItemDto> {
 
     @Override
     public ProductItemDto toDomain(Product p) {

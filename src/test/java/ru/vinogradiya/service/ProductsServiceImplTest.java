@@ -21,8 +21,8 @@ import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.exception.ApiException;
-import ru.vinogradiya.utils.mapping.CatalogueMapper;
-import ru.vinogradiya.utils.mapping.ProductsMapper;
+import ru.vinogradiya.utils.mapping.ItemMapper;
+import ru.vinogradiya.utils.mapping.ProductItemMapper;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,7 +95,7 @@ class ProductsServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        CatalogueMapper<ProductItemDto> mapper = new ProductsMapper();
+        ItemMapper<Product, ProductItemDto> mapper = new ProductItemMapper();
         service = new ProductsServiceImpl(mapper, repository);
     }
 

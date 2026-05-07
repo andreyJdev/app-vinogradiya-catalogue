@@ -33,12 +33,12 @@ public class Selection {
     public static final String NAME = "name";
     public static final String PRODUCTS = "products";
 
+
     @Id
     @Column(name = ID)
     private UUID id;
 
     @Column(name = NAME, unique = true)
-    //todo @UniqueName(message = "Выберите другое Название селекции, это занято")
     @NotBlank(message = "Обязательное заполнение Названия селекции")
     @Size(max = 100, message = "Не больше 100 символов")
     private String name;

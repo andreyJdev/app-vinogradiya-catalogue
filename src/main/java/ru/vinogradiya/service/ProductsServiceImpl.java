@@ -15,7 +15,7 @@ import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.enums.GlobalErrorMessage;
 import ru.vinogradiya.utils.enums.ProductErrorMessage;
-import ru.vinogradiya.utils.mapping.CatalogueMapper;
+import ru.vinogradiya.utils.mapping.ItemMapper;
 
 import java.util.UUID;
 
@@ -27,7 +27,7 @@ import static ru.vinogradiya.queries.product.ProductSpecificationBuilder.buildSp
 @Transactional(readOnly = true)
 public class ProductsServiceImpl implements ProductsService {
 
-    private final CatalogueMapper<ProductItemDto> productsMapper;
+    private final ItemMapper<Product, ProductItemDto> productsMapper;
     private final ProductsRepository repository;
 
     @Override

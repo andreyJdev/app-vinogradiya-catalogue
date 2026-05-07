@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.vinogradiya.models.dto.ProductFilterRequest;
 import ru.vinogradiya.models.dto.ProductItemDto;
-import ru.vinogradiya.models.dto.ProductItemViews;
+import ru.vinogradiya.models.dto.ItemViews;
 import ru.vinogradiya.service.ProductsService;
 
 import java.util.UUID;
@@ -34,7 +34,7 @@ public class ProductsController {
     private final ProductsService service;
 
     @GetMapping("{productId}")
-    @JsonView(ProductItemViews.UserAccess.class)
+    @JsonView(ItemViews.UserAccess.class)
     @Operation(description = "Получить сорт винограда по идентификатору")
     public ResponseEntity<ProductItemDto> findById(@PathVariable UUID productId) {
         ProductItemDto found = service.findById(productId);
@@ -42,7 +42,7 @@ public class ProductsController {
     }
 
     @PostMapping
-    @JsonView(ProductItemViews.UserAccess.class)
+    @JsonView(ItemViews.UserAccess.class)
     @Operation(description = "Получить все сорта винограда с параметрами")
     public ResponseEntity<Page<ProductItemDto>> findAll(
             @RequestBody @Validated ProductFilterRequest request,

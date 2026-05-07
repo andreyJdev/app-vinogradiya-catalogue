@@ -22,10 +22,10 @@ public class ProductCreateDto extends ProductInput {
 
     @JsonIgnore
     @Schema(description = "Идентификатор сорта")
-    private String id;
+    private final String id;
 
     @Schema(description = "Название сорта")
-    @UniqueNameConstraint(table = Product.TABLE_NAME, message = "{vinogradiya.catalogue.base.unique_name}")
+    @UniqueNameConstraint(table = Product.TABLE_NAME, message = "{vinogradiya.catalogue.product.unique_name}")
     @NotNull(message = "{vinogradiya.catalogue.base.not_null}")
     @NotBlank(message = "{vinogradiya.catalogue.base.not_empty}")
     @Size(min = 2, max = 32, message = "{vinogradiya.catalogue.base.size}")
@@ -50,10 +50,5 @@ public class ProductCreateDto extends ProductInput {
     @Generated
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Generated
-    public void setId(String id) {
-        this.id = id;
     }
 }

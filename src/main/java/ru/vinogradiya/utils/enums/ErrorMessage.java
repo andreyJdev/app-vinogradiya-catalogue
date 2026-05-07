@@ -13,6 +13,7 @@ public interface ErrorMessage {
 
     enum Type {
         VALIDATION_TYPE("validation"),
+        APPLICATION_TYPE("application"),
         INTEGRATION_TYPE("integration"),
         AUTH_TYPE("auth");
 

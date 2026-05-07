@@ -22,7 +22,7 @@ import java.util.UUID;
 @NamedEntityGraph(
         name = "Product.findAll",
         attributeNodes = {
-                @NamedAttributeNode(value = Selection.TABLE_NAME, subgraph = Selection.TABLE_NAME + '.' + Selection.PRODUCTS)
+                @NamedAttributeNode(value = Product.SELECTION_FIELD, subgraph = Selection.TABLE_NAME + '.' + Selection.PRODUCTS)
         },
         subgraphs = {
                 @NamedSubgraph(
@@ -57,6 +57,7 @@ public class Product {
     public static final String AVAILABLE_CUT = "available_cut";
     public static final String SOLD_SEED = "sold_seed";
     public static final String SOLD_CUT = "sold_cut";
+    public static final String SELECTION_FIELD = "selection";
     public static final String SELECTION_ID = "selection_id";
 
     @Id
