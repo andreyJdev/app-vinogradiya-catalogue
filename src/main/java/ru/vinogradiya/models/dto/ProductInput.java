@@ -8,6 +8,7 @@ import lombok.Generated;
 import ru.vinogradiya.models.entity.Selection_;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -15,6 +16,7 @@ import static ru.vinogradiya.utils.common.string.MessageUtil.NUMBER_PATTERN;
 import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_FLOAT_PATTERN;
 import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_NUMBER_PATTERN;
 import static ru.vinogradiya.utils.dto.InputDtoMethods.blankToNull;
+import static ru.vinogradiya.utils.dto.InputDtoMethods.getFinance;
 import static ru.vinogradiya.utils.dto.InputDtoMethods.getNumber;
 import static ru.vinogradiya.utils.dto.InputDtoMethods.upperFirst;
 
@@ -124,13 +126,13 @@ public abstract class ProductInput {
     }
 
     @Generated
-    public Integer getPriceSeed() {
-        return getNumber(this.priceSeed);
+    public BigDecimal getPriceSeed() {
+        return getFinance(this.priceSeed);
     }
 
     @Generated
-    public Integer getPriceCut() {
-        return getNumber(this.priceCut);
+    public BigDecimal getPriceCut() {
+        return getFinance(this.priceCut);
     }
 
     @Generated

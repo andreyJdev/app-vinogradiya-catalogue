@@ -15,6 +15,7 @@ import lombok.Data;
 import lombok.Generated;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -86,10 +87,10 @@ public class Product {
     private Integer resistanceCold;
 
     @Column(name = PRICE_SEED)
-    private Integer priceSeed;
+    private BigDecimal priceSeed;
 
     @Column(name = PRICE_CUT)
-    private Integer priceCut;
+    private BigDecimal priceCut;
 
     @Column(name = IMAGE)
     private String image;

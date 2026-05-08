@@ -1,10 +1,12 @@
 package ru.vinogradiya.models.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Data
@@ -45,12 +47,14 @@ public class ProductItemDto {
     private Integer resistanceCold;
 
     @JsonView(ItemViews.UserAccess.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00", locale = "ru")
     @Schema(description = "Цена саженца")
-    private Integer priceSeed;
+    private BigDecimal priceSeed;
 
     @JsonView(ItemViews.UserAccess.class)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "0.00", locale = "ru")
     @Schema(description = "Цена черенка")
-    private Integer priceCut;
+    private BigDecimal priceCut;
 
     @JsonView(ItemViews.UserAccess.class)
     @Schema(description = "Изображение")

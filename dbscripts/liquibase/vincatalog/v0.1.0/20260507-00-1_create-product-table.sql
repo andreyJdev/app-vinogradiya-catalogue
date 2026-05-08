@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS main.product
     "berry"           varchar(64),
     "taste"           varchar(64),
     "resistance_cold" integer,
-    "price_seed"      integer,
-    "price_cut"       integer,
+    "price_seed"      numeric(19, 2),
+    "price_cut"       numeric(19, 2),
     "image"           varchar(128),
     "description"     varchar(2048),
     "selection_mini"  varchar(32),
@@ -29,5 +29,5 @@ CREATE TABLE IF NOT EXISTS main.product
 ALTER TABLE main.product
     ADD CONSTRAINT product_selection_fk
         FOREIGN KEY (selection_id)
-            REFERENCES selection (id)
+            REFERENCES main.selection (id)
             ON DELETE SET NULL;

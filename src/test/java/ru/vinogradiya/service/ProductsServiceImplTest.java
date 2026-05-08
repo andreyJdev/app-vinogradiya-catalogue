@@ -24,6 +24,7 @@ import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.mapping.ItemMapper;
 import ru.vinogradiya.utils.mapping.ProductItemMapper;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -56,8 +57,8 @@ class ProductsServiceImplTest {
                     "36х28 мм 15-20г. розовая",
                     "Мясисто-сочная с мускатным ароматом, оч. сладкая",
                     -23,
-                    600,
-                    300,
+                    new BigDecimal(600),
+                    new BigDecimal(300),
                     "basanti.webp",
                     null,
                     "США",
@@ -76,8 +77,8 @@ class ProductsServiceImplTest {
                     "36х28 мм 15-20г. розовая",
                     "Мясисто-сочная с мускатным ароматом, оч. сладкая",
                     -23,
-                    500,
-                    300,
+                    new BigDecimal(500),
+                    new BigDecimal(300),
                     "basanti.webp",
                     null,
                     "США",

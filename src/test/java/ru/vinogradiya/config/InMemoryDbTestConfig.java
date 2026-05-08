@@ -19,7 +19,7 @@ import javax.sql.DataSource;
 public class InMemoryDbTestConfig {
 
     @Value("${zonky.test.database.postgres.client.properties.currentSchema}")
-    private static String currentSchema;
+    private String currentSchema;
 
     @Bean
     @ConfigurationProperties(prefix = "spring.liquibase")

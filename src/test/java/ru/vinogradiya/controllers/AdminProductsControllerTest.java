@@ -14,7 +14,6 @@ import ru.vinogradiya.utils.BaseMvcTest;
 import java.io.IOException;
 import java.util.List;
 
-@Disabled
 public class AdminProductsControllerTest extends BaseMvcTest {
 
     private static final String REST_URL = "/v1/admin/products";
