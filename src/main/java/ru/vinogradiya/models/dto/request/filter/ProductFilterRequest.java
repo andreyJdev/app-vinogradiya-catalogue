@@ -1,4 +1,4 @@
-package ru.vinogradiya.models.dto;
+package ru.vinogradiya.models.dto.request.filter;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Valid;

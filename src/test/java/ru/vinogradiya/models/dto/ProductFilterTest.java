@@ -3,6 +3,7 @@ package ru.vinogradiya.models.dto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
 
 import java.util.Arrays;
 import java.util.Collections;

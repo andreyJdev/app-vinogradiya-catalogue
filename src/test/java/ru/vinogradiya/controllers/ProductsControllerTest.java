@@ -13,9 +13,9 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import ru.vinogradiya.models.dto.ProductFilter;
-import ru.vinogradiya.models.dto.ProductFilterRequest;
-import ru.vinogradiya.models.dto.ProductItemDto;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
+import ru.vinogradiya.models.dto.request.filter.ProductFilterRequest;
+import ru.vinogradiya.models.dto.response.ProductItem;
 import ru.vinogradiya.service.ProductsService;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.ApiException;
@@ -45,7 +45,7 @@ class ProductsControllerTest extends BaseMvcTest {
     Resource resource;
 
     static JsonNode root;
-    static List<ProductItemDto> productsSource;
+    static List<ProductItem> productsSource;
 
     @BeforeEach()
     void setUp() throws IOException {
@@ -76,7 +76,7 @@ class ProductsControllerTest extends BaseMvcTest {
     void testFindById_shouldReturnProductItem() throws Exception {
 
         // given
-        ProductItemDto serviceResult = productsSource.get(0);
+        ProductItem serviceResult = productsSource.getFirst();
         Mockito.when(service.findById(ID)).thenReturn(serviceResult);
 
         // when
@@ -103,7 +103,7 @@ class ProductsControllerTest extends BaseMvcTest {
         request.setSearch(null);
         request.setFilterParams(filter);
 
-        Page<ProductItemDto> serviceResult = new PageImpl<>(productsSource);
+        Page<ProductItem> serviceResult = new PageImpl<>(productsSource);
         Mockito.when(service.findAll(Mockito.nullable(String.class), any(ProductFilter.class), any(Pageable.class)))
                 .thenReturn(serviceResult);
 
@@ -137,7 +137,7 @@ class ProductsControllerTest extends BaseMvcTest {
         request.setSearch(search);
         request.setFilterParams(filter);
 
-        Page<ProductItemDto> serviceResult = new PageImpl<>(Collections.singletonList(productsSource.get(1)));
+        Page<ProductItem> serviceResult = new PageImpl<>(Collections.singletonList(productsSource.get(1)));
         Mockito.when(service.findAll(Mockito.nullable(String.class), any(ProductFilter.class), any(Pageable.class)))
                 .thenReturn(serviceResult);
 

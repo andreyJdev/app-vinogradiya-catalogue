@@ -1,18 +1,21 @@
-package ru.vinogradiya.models.dto;
+package ru.vinogradiya.models.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Data;
+import ru.vinogradiya.models.entity.Selection;
+import ru.vinogradiya.utils.mapping.ItemViews;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.UUID;
 
 @Data
 @Builder
 @Schema(description = "Элемент получения сорта винограда")
-public class ProductItemDto {
+public class ProductItem {
 
     @JsonView(ItemViews.Private.class)
     @Schema(description = "Идентификатор сорта")
@@ -85,13 +88,13 @@ public class ProductItemDto {
     private Integer soldCut;
 
     @Schema(description = "Название селекции")
-    private Selection selection;
+    private SelectionDto selection;
 
-    public record Selection(@JsonView(ItemViews.UserAccess.class)
-                            String name) {
+    public record SelectionDto(@JsonView(ItemViews.UserAccess.class)
+                               String name) {
 
-        public static Selection of(String name) {
-            return new Selection(name);
+        public static SelectionDto of(Selection selection) {
+            return Objects.nonNull(selection) ? new SelectionDto(selection.getName()) : null;
         }
     }
 }

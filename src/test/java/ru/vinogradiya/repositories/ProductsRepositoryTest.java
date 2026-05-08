@@ -10,14 +10,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
-import ru.vinogradiya.models.dto.ProductCreateDto;
-import ru.vinogradiya.models.dto.ProductFilter;
-import ru.vinogradiya.models.dto.ProductUpdateDto;
+import ru.vinogradiya.models.dto.db.ProductCreateData;
+import ru.vinogradiya.models.dto.db.ProductUpdateData;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.utils.JpaRepositoryBasedTest;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -97,7 +98,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         // then
         System.out.println();
         Assertions.assertAll(
-                () -> assertEquals(products.get("Минор"), result.getContent().get(0)),
+                () -> assertEquals(products.get("Минор"), result.getContent().getFirst()),
                 () -> assertEquals(products.get("Рембо"), result.getContent().get(1)),
                 () -> assertEquals(2, result.getContent().size())
         );
@@ -117,7 +118,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         // then
         System.out.println();
         Assertions.assertAll(
-                () -> assertEquals(products.get("Аркадия"), result.getContent().get(0)),
+                () -> assertEquals(products.get("Аркадия"), result.getContent().getFirst()),
                 () -> assertEquals(1, result.getContent().size())
         );
     }
@@ -147,7 +148,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         String productName = "Минор";
 
         // when
-        Product result = repository.findAllByNameIn(Collections.singletonList(productName)).get(0);
+        Product result = repository.findAllByNameIn(Collections.singletonList(productName)).getFirst();
 
         // then
         assertEquals(productName, result.getName());
@@ -170,8 +171,8 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         // then
         Assertions.assertAll(
                 () -> assertEquals(1, result.getContent().size()),
-                () -> assertEquals(search, result.getContent().get(0).getName()),
-                () -> assertNull(result.getContent().get(0).getSelection())
+                () -> assertEquals(search, result.getContent().getFirst().getName()),
+                () -> assertNull(result.getContent().getFirst().getSelection())
         );
     }
 
@@ -199,7 +200,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
     void testCreate_shouldCreateProduct() {
 
         // given
-        ProductCreateDto dto = new ProductCreateDto();
+        ProductCreateData dto = new ProductCreateData();
 
         UUID productId = dto.getId();
         String name = "Ангуляй Воид Секевич";
@@ -210,16 +211,16 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         dto.setCluster("Гроздь");
         dto.setBerry("Ягода");
         dto.setTaste("Вкус");
-        dto.setResistanceCold("-32");
-        dto.setPriceSeed("500");
-        dto.setPriceCut("700");
+        dto.setResistanceCold(-32);
+        dto.setPriceSeed(new BigDecimal("500"));
+        dto.setPriceCut(new BigDecimal("700"));
         dto.setImage("img.png");
         dto.setDescription("Описание");
         dto.setSelectionMini("Мини селекция");
-        dto.setAvailableSeed("5");
-        dto.setAvailableCut("5");
-        dto.setSoldSeed("2");
-        dto.setSoldCut("3");
+        dto.setAvailableSeed(5);
+        dto.setAvailableCut(5);
+        dto.setSoldSeed(2);
+        dto.setSoldCut(3);
 
         var query = entityManager.createQuery(
                 "SELECT p FROM Product p WHERE p.id = :id",
@@ -247,10 +248,9 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         String selectionId = "45283f75-af8b-4e71-b5ae-38ab6c613f1a";
         String name = "Ангуляй Воид Секевич";
 
-        ProductUpdateDto dto = new ProductUpdateDto();
-        dto.setId(productId);
+        ProductUpdateData dto = new ProductUpdateData();
         dto.setName(name);
-        dto.setSelectionId(selectionId);
+        dto.setSelectionId(UUID.fromString(selectionId));
         dto.setTime("Изменено");
 
         var query = entityManager.createQuery(
@@ -260,7 +260,7 @@ public class ProductsRepositoryTest extends JpaRepositoryBasedTest {
         query.setParameter("id", UUID.fromString(productId));
 
         // when
-        repository.update(dto);
+        repository.update(dto, UUID.fromString(productId));
 
         entityManager.clear();
         Product result = query.getSingleResult();

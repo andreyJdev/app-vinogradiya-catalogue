@@ -9,9 +9,6 @@ import java.util.Optional;
 @Slf4j
 public final class InputDtoMethods {
 
-    private InputDtoMethods() {
-    }
-
     public static String blankToNull(String str) {
         return Optional.ofNullable(str).filter(s -> !s.isBlank()).orElse(null);
     }

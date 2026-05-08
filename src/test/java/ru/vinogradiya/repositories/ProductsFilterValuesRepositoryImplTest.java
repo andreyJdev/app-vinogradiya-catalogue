@@ -11,8 +11,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.jdbc.Sql;
-import ru.vinogradiya.models.dto.FilterValue;
-import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.request.filter.FilterValue;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.utils.JpaRepositoryBasedTest;
@@ -61,7 +61,7 @@ class ProductsFilterValuesRepositoryImplTest extends JpaRepositoryBasedTest {
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
             softAssertions.assertThat(paged).hasSize(1);
-            softAssertions.assertThat(paged.getContent().get(0).getValue()).isEqualTo(search);
+            softAssertions.assertThat(paged.getContent().getFirst().getValue()).isEqualTo(search);
         });
     }
 

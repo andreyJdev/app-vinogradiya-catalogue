@@ -7,7 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.jpa.domain.Specification;
-import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection_;

@@ -12,7 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
-import ru.vinogradiya.models.dto.FilterValue;
+import ru.vinogradiya.models.dto.request.filter.FilterValue;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.utils.enums.FilterProperty;
 

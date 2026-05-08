@@ -1,0 +1,19 @@
+{
+  "time": "string",
+  "strength": "string",
+  "cluster": "string",
+  "berry": "string",
+  "taste": "string",
+  "resistanceCold": "159",
+  "priceSeed": "0",
+  "priceCut": "941.22",
+  "image": "string",
+  "description": "string",
+  "selectionMini": "string",
+  "availableSeed": "0",
+  "availableCut": "0",
+  "soldSeed": "0",
+  "soldCut": "80231278",
+  "selectionId": "                                                                           ",
+  "name": "Уникальный продукт"
+}

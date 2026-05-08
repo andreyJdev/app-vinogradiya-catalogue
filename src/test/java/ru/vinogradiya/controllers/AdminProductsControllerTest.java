@@ -3,11 +3,10 @@ package ru.vinogradiya.controllers;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
-import ru.vinogradiya.models.dto.ProductItemDto;
+import ru.vinogradiya.models.dto.response.ProductItem;
 import ru.vinogradiya.service.ProductsService;
 import ru.vinogradiya.utils.BaseMvcTest;
 
@@ -25,11 +24,12 @@ public class AdminProductsControllerTest extends BaseMvcTest {
     Resource resource;
 
     static JsonNode root;
-    static List<ProductItemDto> productsSource;
+    static List<ProductItem> productsSource;
 
     @BeforeEach()
     void setUp() throws IOException {
         root = mapper.readTree(resource.getFile());
-        productsSource = mapper.readValue(root.get("ProductItemDto").toString(), new TypeReference<>() {});
+        productsSource = mapper.readValue(root.get("ProductItemDto").toString(), new TypeReference<>() {
+        });
     }
 }

@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mapstruct.factory.Mappers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -13,16 +14,17 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import ru.vinogradiya.models.dto.ProductCreateDto;
-import ru.vinogradiya.models.dto.ProductFilter;
-import ru.vinogradiya.models.dto.ProductItemDto;
-import ru.vinogradiya.models.dto.ProductUpdateDto;
+import ru.vinogradiya.models.dto.db.ProductCreateData;
+import ru.vinogradiya.models.dto.db.ProductUpdateData;
+import ru.vinogradiya.models.dto.request.ProductCreateInput;
+import ru.vinogradiya.models.dto.request.ProductUpdateInput;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
+import ru.vinogradiya.models.dto.response.ProductItem;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.repositories.ProductsRepository;
 import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.mapping.ItemMapper;
-import ru.vinogradiya.utils.mapping.ProductItemMapper;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -86,7 +88,7 @@ class ProductsServiceImplTest {
                     0,
                     0,
                     2,
-                    selections.get(0))
+                    selections.getFirst())
     );
 
     private ProductsService service;
@@ -96,7 +98,7 @@ class ProductsServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        ItemMapper<Product, ProductItemDto> mapper = new ProductItemMapper();
+        ItemMapper mapper = Mappers.getMapper(ItemMapper.class);
         service = new ProductsServiceImpl(mapper, repository);
     }
 
@@ -113,13 +115,13 @@ class ProductsServiceImplTest {
         Mockito.when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(expected);
 
         // when
-        Page<ProductItemDto> result = service.findAll(null, filter, pageable);
+        Page<ProductItem> result = service.findAll(null, filter, pageable);
 
         // then
         Assertions.assertAll(
                 () -> assertEquals(2, result.getContent().size()),
                 () -> assertEquals(2, result.getNumberOfElements()),
-                () -> assertEquals(products.get(0).getName(), result.getContent().get(0).getName()),
+                () -> assertEquals(products.getFirst().getName(), result.getContent().getFirst().getName()),
                 () -> assertEquals(products.get(1).getName(), result.getContent().get(1).getName())
         );
         Mockito.verify(repository, Mockito.times(1)).findAll(any(Specification.class), any(Pageable.class));
@@ -133,7 +135,7 @@ class ProductsServiceImplTest {
         Mockito.when(repository.findById(ID)).thenReturn(Optional.of(products.get(1)));
 
         // when
-        ProductItemDto result = service.findById(ID);
+        ProductItem result = service.findById(ID);
 
         // then
         Assertions.assertAll(
@@ -164,7 +166,7 @@ class ProductsServiceImplTest {
         Mockito.when(repository.findById(id)).thenReturn(Optional.of(product));
 
         // when
-        ProductItemDto result = service.findById(id);
+        ProductItem result = service.findById(id);
 
         // then
         Assertions.assertAll(
@@ -178,21 +180,21 @@ class ProductsServiceImplTest {
     void testSave_shouldReturnProductItem() {
 
         // given
-        ProductCreateDto createDto = new ProductCreateDto();
-        createDto.setName("Ангуляй Воид Секевич");
+        ProductCreateInput createRequest = new ProductCreateInput();
+        createRequest.setName("Ангуляй Воид Секевич");
         Product product = new Product();
-        product.setName(createDto.getName());
-        Mockito.doNothing().when(repository).create(createDto);
-        Mockito.when(repository.findById(createDto.getId()))
+        product.setName(createRequest.getName());
+        Mockito.doNothing().when(repository).create(any(ProductCreateData.class));
+        Mockito.when(repository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(product));
 
         // when
-        ProductItemDto result = service.save(createDto);
+        ProductItem result = service.save(createRequest);
 
         // then
         Assertions.assertAll(
-                () -> assertInstanceOf(ProductItemDto.class, result),
-                () -> assertEquals(createDto.getName(), result.getName())
+                () -> assertInstanceOf(ProductItem.class, result),
+                () -> assertEquals(createRequest.getName(), result.getName())
         );
     }
 
@@ -201,22 +203,21 @@ class ProductsServiceImplTest {
     void testUpdate_shouldReturnProductItem() {
 
         // given
-        ProductUpdateDto updateDto = new ProductUpdateDto();
-        updateDto.setId(UUID.randomUUID().toString());
-        updateDto.setName("Алиса");
+        ProductUpdateInput updateRequest = new ProductUpdateInput();
+        updateRequest.setName("Алиса");
         Product product = new Product();
-        product.setName(updateDto.getName());
-        Mockito.doNothing().when(repository).update(updateDto);
-        Mockito.when(repository.findById(updateDto.getId()))
+        product.setName(updateRequest.getName());
+        Mockito.doNothing().when(repository).update(any(ProductUpdateData.class), any(UUID.class));
+        Mockito.when(repository.findById(any(UUID.class)))
                 .thenReturn(Optional.of(product));
 
         // when
-        ProductItemDto result = service.update(updateDto);
+        ProductItem result = service.update(updateRequest, UUID.randomUUID());
 
         // then
         Assertions.assertAll(
-                () -> assertInstanceOf(ProductItemDto.class, result),
-                () -> assertEquals(updateDto.getName(), result.getName())
+                () -> assertInstanceOf(ProductItem.class, result),
+                () -> assertEquals(updateRequest.getName(), result.getName())
         );
     }
 }

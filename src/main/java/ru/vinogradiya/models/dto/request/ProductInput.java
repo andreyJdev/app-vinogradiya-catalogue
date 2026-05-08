@@ -1,26 +1,21 @@
-package ru.vinogradiya.models.dto;
+package ru.vinogradiya.models.dto.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
-import lombok.Generated;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import ru.vinogradiya.models.entity.Selection_;
 import ru.vinogradiya.utils.validation.annotation.PresentInDbConstraint;
-
-import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
 
 import static ru.vinogradiya.utils.common.string.MessageUtil.NUMBER_PATTERN;
 import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_FLOAT_PATTERN;
 import static ru.vinogradiya.utils.common.string.MessageUtil.POSITIVE_NUMBER_PATTERN;
-import static ru.vinogradiya.utils.dto.InputDtoMethods.blankToNull;
-import static ru.vinogradiya.utils.dto.InputDtoMethods.getFinance;
-import static ru.vinogradiya.utils.dto.InputDtoMethods.getNumber;
-import static ru.vinogradiya.utils.dto.InputDtoMethods.upperFirst;
 
-@Data
+@Getter
+@Setter
+@EqualsAndHashCode
 public abstract class ProductInput {
 
     @Schema(description = "Время созревания")
@@ -94,85 +89,4 @@ public abstract class ProductInput {
     @PresentInDbConstraint(table = "selection", column = Selection_.ID, message = "{vinogradiya.catalogue.selection.not_found}")
     @Pattern(regexp = "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12})$|\\s*")
     private String selectionId;
-
-    @Generated
-    public String getTime() {
-        return upperFirst(blankToNull(this.time));
-    }
-
-    @Generated
-    public String getStrength() {
-        return upperFirst(blankToNull(this.strength));
-    }
-
-    @Generated
-    public String getCluster() {
-        return upperFirst(blankToNull(this.cluster));
-    }
-
-    @Generated
-    public String getBerry() {
-        return upperFirst(blankToNull(this.berry));
-    }
-
-    @Generated
-    public String getTaste() {
-        return upperFirst(blankToNull(this.taste));
-    }
-
-    @Generated
-    public Integer getResistanceCold() {
-        return getNumber(this.resistanceCold);
-    }
-
-    @Generated
-    public BigDecimal getPriceSeed() {
-        return getFinance(this.priceSeed);
-    }
-
-    @Generated
-    public BigDecimal getPriceCut() {
-        return getFinance(this.priceCut);
-    }
-
-    @Generated
-    public String getImage() {
-        return blankToNull(this.image);
-    }
-
-    @Generated
-    public String getDescription() {
-        return upperFirst(blankToNull(this.description));
-    }
-
-    @Generated
-    public String getSelectionMini() {
-        return upperFirst(blankToNull(this.selectionMini));
-    }
-
-    @Generated
-    public Integer getAvailableSeed() {
-        return getNumber(this.availableSeed);
-    }
-
-    @Generated
-    public Integer getAvailableCut() {
-        return getNumber(this.availableCut);
-    }
-
-    @Generated
-    public Integer getSoldSeed() {
-        return getNumber(this.soldSeed);
-    }
-
-    @Generated
-    public Integer getSoldCut() {
-        return getNumber(this.soldCut);
-    }
-
-    @Generated
-    public UUID getSelectionId() {
-        return Optional.ofNullable(blankToNull(this.selectionId))
-                .map(UUID::fromString).orElse(null);
-    }
 }

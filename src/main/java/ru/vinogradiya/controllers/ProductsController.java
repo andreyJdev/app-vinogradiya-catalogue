@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.vinogradiya.models.dto.ProductFilterRequest;
-import ru.vinogradiya.models.dto.ProductItemDto;
-import ru.vinogradiya.models.dto.ItemViews;
+import ru.vinogradiya.models.dto.request.filter.ProductFilterRequest;
+import ru.vinogradiya.models.dto.response.ProductItem;
 import ru.vinogradiya.service.ProductsService;
+import ru.vinogradiya.utils.mapping.ItemViews;
 
 import java.util.UUID;
 
@@ -36,15 +36,15 @@ public class ProductsController {
     @GetMapping("{productId}")
     @JsonView(ItemViews.UserAccess.class)
     @Operation(description = "Получить сорт винограда по идентификатору")
-    public ResponseEntity<ProductItemDto> findById(@PathVariable UUID productId) {
-        ProductItemDto found = service.findById(productId);
+    public ResponseEntity<ProductItem> findById(@PathVariable UUID productId) {
+        ProductItem found = service.findById(productId);
         return ResponseEntity.ok(found);
     }
 
     @PostMapping
     @JsonView(ItemViews.UserAccess.class)
     @Operation(description = "Получить все сорта винограда с параметрами")
-    public ResponseEntity<Page<ProductItemDto>> findAll(
+    public ResponseEntity<Page<ProductItem>> findAll(
             @RequestBody @Validated ProductFilterRequest request,
             @PageableDefault(size = 8)
             @SortDefault.SortDefaults({
@@ -54,7 +54,7 @@ public class ProductsController {
             })
             @ParameterObject Pageable pageable
     ) {
-        Page<ProductItemDto> found = service.findAll(request.getSearch(), request.getFilterParams(), pageable);
+        Page<ProductItem> found = service.findAll(request.getSearch(), request.getFilterParams(), pageable);
         return ResponseEntity.ok(found);
     }
 }

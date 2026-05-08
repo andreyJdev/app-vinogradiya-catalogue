@@ -1,4 +1,4 @@
-package ru.vinogradiya.models.dto;
+package ru.vinogradiya.utils.mapping;
 
 public abstract class ItemViews {
 

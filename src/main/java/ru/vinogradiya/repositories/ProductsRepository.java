@@ -10,8 +10,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Repository;
-import ru.vinogradiya.models.dto.ProductCreateDto;
-import ru.vinogradiya.models.dto.ProductUpdateDto;
+import ru.vinogradiya.models.dto.db.ProductCreateData;
+import ru.vinogradiya.models.dto.db.ProductUpdateData;
 import ru.vinogradiya.models.entity.Product;
 
 import java.util.List;
@@ -42,49 +42,49 @@ public interface ProductsRepository extends JpaRepository<Product, UUID>,
                         taste, resistance_cold, price_seed, price_cut,
                         image, description, selection_mini, available_seed,
                         available_cut, sold_seed, sold_cut, selection_id)
-                    VALUES (:#{#dto.id},
-                            :#{#dto.name},
-                            :#{#dto.time},
-                            :#{#dto.strength},
-                            :#{#dto.cluster},
-                            :#{#dto.berry},
-                            :#{#dto.taste},
-                            :#{#dto.resistanceCold},
-                            :#{#dto.priceSeed},
-                            :#{#dto.priceCut},
-                            :#{#dto.image},
-                            :#{#dto.description},
-                            :#{#dto.selectionMini},
-                            :#{#dto.availableSeed},
-                            :#{#dto.availableCut},
-                            :#{#dto.soldSeed},
-                            :#{#dto.soldCut},
-                            :#{#dto.selectionId})
+                    VALUES (:#{#data.id},
+                            :#{#data.name},
+                            :#{#data.time},
+                            :#{#data.strength},
+                            :#{#data.cluster},
+                            :#{#data.berry},
+                            :#{#data.taste},
+                            :#{#data.resistanceCold},
+                            :#{#data.priceSeed},
+                            :#{#data.priceCut},
+                            :#{#data.image},
+                            :#{#data.description},
+                            :#{#data.selectionMini},
+                            COALESCE(:#{#data.availableSeed}, 0),
+                            COALESCE(:#{#data.availableCut}, 0),
+                            COALESCE(:#{#data.soldSeed}, 0),
+                            COALESCE(:#{#data.soldCut}, 0),
+                            :#{#data.selectionId})
             """, nativeQuery = true)
     @Modifying
-    void create(ProductCreateDto dto);
+    void create(ProductCreateData data);
 
     @Query(value = """
             UPDATE product SET
-            name = :#{#dto.name},
-            time = :#{#dto.time},
-            strength = :#{#dto.strength},
-            cluster = :#{#dto.cluster},
-            berry = :#{#dto.berry},
-            taste = :#{#dto.taste},
-            resistance_cold = :#{#dto.resistanceCold},
-            price_seed = :#{#dto.priceSeed},
-            price_cut = :#{#dto.priceCut},
-            image = :#{#dto.image},
-            description = :#{#dto.description},
-            selection_mini = :#{#dto.selectionMini},
-            available_seed = :#{#dto.availableSeed},
-            available_cut = :#{#dto.availableCut},
-            sold_seed = :#{#dto.soldSeed},
-            sold_cut = :#{#dto.soldCut},
-            selection_id = :#{#dto.selectionId}
-            WHERE id = :#{#dto.id}
+            name = :#{#data.name},
+            time = :#{#data.time},
+            strength = :#{#data.strength},
+            cluster = :#{#data.cluster},
+            berry = :#{#data.berry},
+            taste = :#{#data.taste},
+            resistance_cold = :#{#data.resistanceCold},
+            price_seed = :#{#data.priceSeed},
+            price_cut = :#{#data.priceCut},
+            image = :#{#data.image},
+            description = :#{#data.description},
+            selection_mini = :#{#data.selectionMini},
+            available_seed = COALESCE(:#{#data.availableSeed}, 0),
+            available_cut = COALESCE(:#{#data.availableCut}, 0),
+            sold_seed = COALESCE(:#{#data.soldSeed}, 0),
+            sold_cut = COALESCE(:#{#data.soldCut}, 0),
+            selection_id = :#{#data.selectionId}
+            WHERE id = :#{#id}
             """, nativeQuery = true)
     @Modifying
-    void update(ProductUpdateDto dto);
+    void update(ProductUpdateData data, UUID id);
 }

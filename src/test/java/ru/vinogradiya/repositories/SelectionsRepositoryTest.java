@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.jdbc.Sql;
-import ru.vinogradiya.models.dto.SelectionCreateDto;
+import ru.vinogradiya.models.dto.db.SelectionCreateData;
 import ru.vinogradiya.models.entity.Selection;
 import ru.vinogradiya.models.entity.Selection_;
 import ru.vinogradiya.utils.JpaRepositoryBasedTest;
@@ -44,12 +44,12 @@ public class SelectionsRepositoryTest extends JpaRepositoryBasedTest {
     void testCreate_shouldCreateSelection() {
 
         // given
-        SelectionCreateDto dto = new SelectionCreateDto();
+        SelectionCreateData data = new SelectionCreateData();
 
-        UUID selectionId = dto.getId();
+        UUID selectionId = data.getId();
         String name = "Новая селекция";
 
-        dto.setName(name);
+        data.setName(name);
 
         var query = entityManager.createQuery(
                 "SELECT s FROM Selection s WHERE s.id = :id",
@@ -58,7 +58,7 @@ public class SelectionsRepositoryTest extends JpaRepositoryBasedTest {
         query.setParameter("id", selectionId);
 
         // when
-        repository.create(dto);
+        repository.create(data);
 
         Selection result = query.getSingleResult();
 

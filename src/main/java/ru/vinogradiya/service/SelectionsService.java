@@ -1,9 +1,9 @@
 package ru.vinogradiya.service;
 
-import ru.vinogradiya.models.dto.SelectionCreateDto;
-import ru.vinogradiya.models.dto.SelectionItemDto;
+import ru.vinogradiya.models.dto.request.SelectionCreateInput;
+import ru.vinogradiya.models.dto.response.SelectionItem;
 
 public interface SelectionsService {
 
-    SelectionItemDto save(SelectionCreateDto dto);
+    SelectionItem save(SelectionCreateInput request);
 }

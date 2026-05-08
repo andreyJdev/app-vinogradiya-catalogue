@@ -6,7 +6,7 @@ import jakarta.persistence.criteria.Root;
 import jakarta.persistence.criteria.Selection;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import ru.vinogradiya.models.dto.ProductFilter;
+import ru.vinogradiya.models.dto.request.filter.ProductFilter;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.models.entity.Product_;
 import ru.vinogradiya.models.entity.Selection_;
