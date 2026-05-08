@@ -9,3 +9,9 @@ spring:
   sql:
     init:
       mode: never
+db:
+  properties:
+    port: 5433
+    name: vincatalog
+    current-schema: main
+    initial-data-path: /db/sql-dev-data/initial-data.sql

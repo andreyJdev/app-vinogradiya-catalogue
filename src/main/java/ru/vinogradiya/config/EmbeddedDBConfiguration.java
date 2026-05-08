@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
+import ru.vinogradiya.utils.properties.EmbeddedDBProperties;
 
 import javax.sql.DataSource;
 import java.io.IOException;
@@ -26,20 +27,19 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class EmbeddedDBConfiguration {
 
-    private static final String DB_NAME = "vincatalog";
-
+    private final EmbeddedDBProperties databaseProperties;
     private final LiquibaseProperties liquibaseProperties;
 
     @Bean
     public DataSource dataSource() throws IOException {
         EmbeddedPostgres pg = EmbeddedPostgres.builder()
-                .setPort(5433)
+                .setPort(databaseProperties.getPort())
                 .start();
 
         initializeDatabase(pg);
 
         return DataSourceBuilder.create()
-                .url("jdbc:postgresql://localhost:5433/" + DB_NAME + "?currentSchema=main")
+                .url("jdbc:postgresql://localhost:" + databaseProperties.getPort() + "/" + databaseProperties.getName() + "?currentSchema=" + databaseProperties.getCurrentSchema())
                 .username("postgres")
                 .password("")
                 .build();
@@ -48,17 +48,17 @@ public class EmbeddedDBConfiguration {
     private void initializeDatabase(EmbeddedPostgres pg) {
         try (Connection conn = pg.getPostgresDatabase().getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.execute("CREATE DATABASE " + DB_NAME);
-            log.info(">> Embedded DB: БД {} создана", DB_NAME);
+            stmt.execute("CREATE DATABASE " + databaseProperties.getName());
+            log.info(">> Embedded DB: БД {} создана", databaseProperties.getName());
         } catch (SQLException e) {
             throw new RuntimeException("Embedded DB: Ошибка при инициализации БД", e);
         }
 
-        try (Connection conn = pg.getDatabase("postgres", DB_NAME).getConnection();
+        try (Connection conn = pg.getDatabase("postgres", databaseProperties.getName()).getConnection();
              Statement stmt = conn.createStatement()) {
-            stmt.execute("CREATE SCHEMA main");
-            stmt.execute("SET search_path TO main");
-            log.info(">> Embedded DB: Схема main создана/проверена");
+            stmt.execute("CREATE SCHEMA " + databaseProperties.getCurrentSchema());
+            stmt.execute("SET search_path TO " + databaseProperties.getCurrentSchema());
+            log.info(">> Embedded DB: Схема " + databaseProperties.getCurrentSchema() + " создана/проверена");
         } catch (SQLException e) {
             throw new RuntimeException(">> Embedded DB: Ошибка при инициализации БД", e);
         }
@@ -74,7 +74,7 @@ public class EmbeddedDBConfiguration {
              Statement stmt = conn.createStatement()) {
             if (isDataWanted(stmt)) {
                 String sql = new String(
-                        Objects.requireNonNull(getClass().getResourceAsStream("/db/sql-dev-data/initial-data.sql"))
+                        Objects.requireNonNull(getClass().getResourceAsStream(databaseProperties.getInitialDataPath()))
                                 .readAllBytes(),
                         StandardCharsets.UTF_8
                 );
@@ -87,7 +87,7 @@ public class EmbeddedDBConfiguration {
     }
 
     private boolean isDataWanted(Statement stmt) throws SQLException {
-        try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM main.product")) {
+        try (ResultSet rs = stmt.executeQuery("SELECT COUNT(*) FROM " + databaseProperties.getCurrentSchema() + ".product")) {
             if (rs.next()) {
                 return rs.getInt(1) == 0;
             }
