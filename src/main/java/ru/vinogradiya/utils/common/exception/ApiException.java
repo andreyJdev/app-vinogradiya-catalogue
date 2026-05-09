@@ -1,9 +1,9 @@
 package ru.vinogradiya.utils.common.exception;
 
 import lombok.Generated;
-import org.assertj.core.util.Arrays;
 import ru.vinogradiya.utils.enums.ErrorMessage;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;

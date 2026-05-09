@@ -1,7 +1,5 @@
 package ru.vinogradiya.controllers;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -20,6 +18,8 @@ import ru.vinogradiya.service.ProductsService;
 import ru.vinogradiya.utils.BaseMvcTest;
 import ru.vinogradiya.utils.common.exception.ApiException;
 import ru.vinogradiya.utils.enums.ProductErrorMessage;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -50,8 +50,7 @@ class ProductsControllerTest extends BaseMvcTest {
     @BeforeEach()
     void setUp() throws IOException {
         root = mapper.readTree(resource.getFile());
-        productsSource = mapper.readValue(root.get("ProductItemDto").toString(), new TypeReference<>() {
-        });
+        productsSource = mapper.readValue(root.get("ProductItemDto").toString(), new TypeReference<>(){});
     }
 
     @Test

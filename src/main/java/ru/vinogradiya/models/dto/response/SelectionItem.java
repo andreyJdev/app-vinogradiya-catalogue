@@ -2,8 +2,10 @@ package ru.vinogradiya.models.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import ru.vinogradiya.models.entity.Product;
 import ru.vinogradiya.utils.mapping.ItemViews;
 
@@ -13,6 +15,8 @@ import java.util.UUID;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "Элемент получения селекции")
 public class SelectionItem {
 
