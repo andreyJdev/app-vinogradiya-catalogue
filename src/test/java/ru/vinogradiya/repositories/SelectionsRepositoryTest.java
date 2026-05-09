@@ -17,8 +17,8 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @Sql("/db/sql-test-data/selection.sql")
 public class SelectionsRepositoryTest extends JpaRepositoryBasedTest {

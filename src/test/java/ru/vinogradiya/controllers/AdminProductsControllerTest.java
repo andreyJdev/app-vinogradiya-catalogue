@@ -29,6 +29,7 @@ public class AdminProductsControllerTest extends BaseMvcTest {
     @BeforeEach()
     void setUp() throws IOException {
         root = mapper.readTree(resource.getFile());
-        productsSource = mapper.readValue(root.get("ProductItemDto").toString(), new TypeReference<>(){});
+        productsSource = mapper.readValue(root.get("ProductItemDto").toString(), new TypeReference<>() {
+        });
     }
 }

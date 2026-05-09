@@ -1,8 +1,10 @@
 package ru.vinogradiya.config;
 
 import io.zonky.test.db.postgres.embedded.EmbeddedPostgres;
-import lombok.RequiredArgsConstructor;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.boot.liquibase.autoconfigure.LiquibaseProperties;
 import org.springframework.context.annotation.Bean;
@@ -24,11 +26,31 @@ import java.util.Objects;
 @Profile("db")
 @Configuration
 @Slf4j
-@RequiredArgsConstructor
 public class EmbeddedDBConfiguration {
 
+    @Value("${spring.liquibase.enabled}")
+    boolean liquibaseEnabled;
+
+    private LiquibaseProperties liquibaseProperties;
     private final EmbeddedDBProperties databaseProperties;
-    private final LiquibaseProperties liquibaseProperties;
+
+    public EmbeddedDBConfiguration(
+            @Autowired(required = false) LiquibaseProperties liquibaseProperties,
+            EmbeddedDBProperties databaseProperties
+    ) {
+        this.databaseProperties = databaseProperties;
+        this.liquibaseProperties = liquibaseProperties;
+    }
+
+    @PostConstruct
+    public void init() {
+        if (!liquibaseEnabled) {
+            if (this.liquibaseProperties == null) {
+                this.liquibaseProperties = new LiquibaseProperties();
+            }
+            this.liquibaseProperties.setEnabled(false);
+        }
+    }
 
     @Bean
     public DataSource dataSource() throws IOException {
@@ -67,6 +89,7 @@ public class EmbeddedDBConfiguration {
     @EventListener(ContextRefreshedEvent.class)
     private void loadInitialData() throws IOException {
         if (!liquibaseProperties.isEnabled()) {
+            log.info(">> Liquibase выключен, тестовые данные не были загружены");
             return;
         }
 
