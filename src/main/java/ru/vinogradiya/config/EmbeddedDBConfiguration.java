@@ -80,14 +80,14 @@ public class EmbeddedDBConfiguration {
              Statement stmt = conn.createStatement()) {
             stmt.execute("CREATE SCHEMA " + databaseProperties.getCurrentSchema());
             stmt.execute("SET search_path TO " + databaseProperties.getCurrentSchema());
-            log.info(">> Embedded DB: Схема " + databaseProperties.getCurrentSchema() + " создана/проверена");
+            log.info(">> Embedded DB: Схема {} создана/проверена", databaseProperties.getCurrentSchema());
         } catch (SQLException e) {
             throw new RuntimeException(">> Embedded DB: Ошибка при инициализации БД", e);
         }
     }
 
     @EventListener(ContextRefreshedEvent.class)
-    private void loadInitialData() throws IOException {
+    private void loadInitialData() {
         if (!liquibaseProperties.isEnabled()) {
             log.info(">> Liquibase выключен, тестовые данные не были загружены");
             return;
